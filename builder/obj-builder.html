@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="https://cx-app.azurewebsites.net/public/images/favicon.ico">
+    <link rel="stylesheet" href="https://cx-app.azurewebsites.net/public/styles/cx-core-base.css">
+    <link rel="stylesheet" href="https://cx-app.azurewebsites.net/public/styles/cx-core-typography.css">
+    <link rel="stylesheet" href="https://cx-app.azurewebsites.net/public/styles/cx-core-forms.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <title>
+        cx:objectBuilder (BETA 2020.05)
+    </title>
+
+    <script>
+        function buildTable(tableName, business) {
+            if (!tableName){ return; }
+            var url = '/build?table=' + tableName;
+            window.open(url);
+            if (business){
+                url += '&b=true';
+                window.open(url);
+            }
+        }
+
+        function build(){
+            var exit = false;
+            $('.p input[type=checkbox]:checked').each(function(idx, ele) {
+               var b_id = $(ele).attr('id').replace('p','b');
+               buildTable($(ele).val(), $('#' + b_id).is(":checked"));
+               exit = true;
+            });
+            if (exit){ return; }
+            
+            var tableName = $('#tableName').val();
+            if (!tableName){
+                alert('select one ore more tables from the left or specify a table name on the right!!!');
+                return;
+            }
+            buildTable(tableName, $('#buildBusiness').is(":checked"));
+        }
+
+        function toggleCheckBoxes(element, businessObject) {
+            var selector = (businessObject) ? '.b' : '.p';
+            if ($(element).is(":checked")){
+                $(selector + ' input[type=checkbox]').attr('checked', 'checked');
+            } else {
+                $(selector + ' input[type=checkbox]').removeAttr('checked');
+            }
+
+        }
+    </script>
+
+</head>
+
+<body>
+    <div style="margin: auto; text-align: center; padding-top: 70px; ">
+        <h1>cx:tools::peppo.nodejs.objectBuilder<br />(BETA 2020.05)</h1>
+        <div style="padding-bottom: 17px;">
+            <input class="btn form-control" type="button" value="build" onclick="build();" />
+        </div>
+        
+
+        <div style="margin: auto; display: table;">
+            <div style="width: 300px; display: table-cell; text-align: left;">
+                <div style="padding: 11px;">
+                    <div style="display: inline-block; vertical-align: bottom;">
+                        <input class="p" type="checkbox" onclick="toggleCheckBoxes(this, false)" style="margin-right: 7px;" />
+                    </div>
+                    <div style="display: inline-block; vertical-align: bottom;">
+                        <input class="b" type="checkbox" onclick="toggleCheckBoxes(this, true)"  style="margin-right: 7px;" />
+                    </div>
+                    <label>
+                        select multiple tables
+                    </label>
+                </div>
+                
+                <div>
+                    {$tableList}
+                </div>
+            </div>
+
+            <div style="width: 300px; display: table-cell;">
+                <label>
+                    build single table<br />enter <b>schema</b> to build the table schema object
+                </label>
+                <input class="form-control" style="margin: auto; margin: auto; margin-bottom: 10px;; text-align: center;" type="text" placeholder="enter table name" id="tableName" />
+                <div style="padding-bottom: 17px;">
+                    <div style="display: inline-block; vertical-align: bottom;">
+                        <input id="buildBusiness" type="checkbox" style="margin-right: 7px;" />
+                    </div>
+                    <label>
+                        also build business object
+                    </label>
+                </div>
+            </div>
+            
+        </div>
+
+        
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "cx.data.v0",
+  "version": "1.0.0",
+  "description": "",
+  "main": "cx-data-app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ossmcloud/cx.data.v0.git"
+  },
+  "author": "peppo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ossmcloud/cx.data.v0/issues"
+  },
+  "homepage": "https://github.com/ossmcloud/cx.data.v0#readme",
+  "dependencies": {
+    "cx-core": "file:../cx.core.v0"
+  }
+}

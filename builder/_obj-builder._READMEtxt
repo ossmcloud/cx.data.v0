@@ -1,0 +1,22 @@
+
+
+01. objectBuilder.js
+    make sure _config is pointing to the required DB
+
+
+02. for each table:
+    PERSISTENT
+        create (if not there) ./cx-client/persistent/p-[table-name].js
+        go to: http://peppo-hp:3002/build
+            enter table name and click build
+        copy content into p-[table-name].js file
+
+    BUSINESS
+        create (if not there) ./cx-client/persistent/[table-name].js
+        --- POPULATE MANUALLY FOR NOW ---
+
+03. just once for the DB    
+    SCHEMA
+        go to: http://peppo-hp:3002/build
+            enter 'SCHEMA' as table name
+        copy content into cx-client-schema.js file

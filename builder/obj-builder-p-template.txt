@@ -1,0 +1,58 @@
+'use strict'
+//
+//*****************************************************************************************
+//                                                                                        *
+//  IMPORTANT NOTE: THIS FILE IS AUTOMATICALLY CREATED BY [peppo.nodejs.objectBuilder]    *
+//                  DO NOT EDIT OR ADD CODE IN ANY WAY AS IT WILL BE OVERWRITTEN WHEN     *
+//                  [peppo.nodejs.objectBuilder] REGENERATES THE FILE                     *
+//                                                                                        *
+//*****************************************************************************************
+// 
+// CORE SDK REQUIRE
+//
+const DBTable = require('../../cx/data/schema/cx-record-table');
+const DBRecord = require('../../cx/data/schema/cx-record');
+// 
+// TABLE NAME
+//
+const _tableName = '{$tableName}';
+//
+// FIELD NAMES (just because they are handy to have here)
+//
+const _fieldNames = {
+{$tableFieldNames}
+}
+//
+// FIELD SPECIFICATIONS
+//
+const _fields = {
+{$tableFields}
+}
+//
+// PERSISTENT TABLE OBJECT (THIS REPRESENTS A COLLECTION OF RECORDS)
+//
+class Persistent_{$tableName}_Collection extends DBTable {
+    constructor() {
+        super(_tableName, _fields);
+    }
+    get FieldNames() { return _fieldNames; }
+}
+//
+// PERSISTENT RECORD OBJECT (THIS REPRESENT A RECORD )
+//
+class Persistent_{$tableName} extends DBRecord {
+    constructor(table, defaults) {
+        super(table, defaults);
+    }
+    get FieldNames() { return _fieldNames; }
+    
+    // DEFINE TABLE FIELDS AS PROPERTIES
+{$tableProperties}
+}
+//
+//  MODULE EXPORTS
+//
+module.exports = {
+    Table: Persistent_{$tableName}_Collection,
+    Record: Persistent_{$tableName},
+}

@@ -1,0 +1,35 @@
+'use strict'
+//
+// REQUIRE PERSISTENT TABLE
+//
+const _persistentTable = require('../persistent/p-{$tableName}');
+//
+// NOTE: BUSINESS LOGIC RELATED TO THE RECORD COLLECTION SHOULD BE BUILT HERE
+//
+class {$tableName}_Collection extends _persistentTable.Table {
+    createNew(defaults) {
+        return new {$tableName}(this, defaults);
+    }
+}
+//
+// NOTE: BUSINESS LOGIC RELATED TO THE RECORD SHOULD BE BUILT HERE
+//
+class {$tableName} extends _persistentTable.Record {
+    constructor(table, defaults) {
+        super(table, defaults);
+    };
+
+    async save() {
+        // NOTE: BUSINESS CLASS LEVEL VALIDATION
+        await super.save()
+    }
+}
+//
+// EXPORTS ONLY TABLE AND RECORD
+//
+module.exports = {
+    Table: {$tableName}_Collection,
+    Record: {$tableName},
+}
+
+
