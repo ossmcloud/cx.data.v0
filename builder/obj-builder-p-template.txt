@@ -10,8 +10,7 @@
 // 
 // CORE SDK REQUIRE
 //
-const DBTable = require('../../cx/data/schema/cx-record-table');
-const DBRecord = require('../../cx/data/schema/cx-record');
+const _cx_data = require('cx-data');
 // 
 // TABLE NAME
 //
@@ -31,7 +30,7 @@ const _fields = {
 //
 // PERSISTENT TABLE OBJECT (THIS REPRESENTS A COLLECTION OF RECORDS)
 //
-class Persistent_{$tableName}_Collection extends DBTable {
+class Persistent_{$tableName}_Collection extends _cx_data.DBTable {
     constructor() {
         super(_tableName, _fields);
     }
@@ -40,7 +39,7 @@ class Persistent_{$tableName}_Collection extends DBTable {
 //
 // PERSISTENT RECORD OBJECT (THIS REPRESENT A RECORD )
 //
-class Persistent_{$tableName} extends DBRecord {
+class Persistent_{$tableName} extends _cx_data.DBRecord {
     constructor(table, defaults) {
         super(table, defaults);
     }

@@ -1,6 +1,7 @@
 'use strict';
 
 const _fs = require('fs');
+const _path = require('path');
 const _cx_context = require('../schema/cx-context');
 
 // needed to build persistent object class
@@ -118,7 +119,8 @@ async function _build(tableName) {
     });
 
     // load template file for persistent object
-    var jsCode = _fs.readFileSync('./src/cx/data/builder/obj-builder-p-template.txt', 'utf8');
+    //console.log(_path.join(__dirname, 'obj-builder-b-template.txt'));
+    var jsCode = _fs.readFileSync(_path.join(__dirname, 'obj-builder-p-template.txt'), 'utf8');
     // table name
     jsCode = jsCode.replaceAll('{$tableName}', tableName);
     // table field names
@@ -166,7 +168,8 @@ async function _build(tableName) {
 async function _build_b(tableName) {
     // the business object is generally created only ne and is very simple as it is
     // designed to hold all record-related business rules
-    var jsCode = _fs.readFileSync('./src/cx/data/builder/obj-builder-b-template.txt', 'utf8');
+    
+    var jsCode = _fs.readFileSync(_path.join(__dirname, 'obj-builder-b-template.txt'), 'utf8');
     jsCode = jsCode.replaceAll('{$tableName}', tableName);
     return jsCode;
 }

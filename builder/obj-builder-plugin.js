@@ -1,29 +1,29 @@
 'use strict'
 
-//const Path = require('path');
+const _path = require('path');
 const _fs = require('fs');
+const _core = require('cx-core');
 
-const _object_builder = require('./obj-builder').init({
-    name: 'cx_0',
-    timeOut: 1,
-    config: {
-        server: 'ilaokw62nb.database.windows.net',
-        user: 'envisageSQL',
-        password: '3nv15ag3!',
-        database: 'cx.client.b'
-    }
-});
+let _poolConfig = null;
 
 exports.plugin = {
     name: 'obj-builder',
     register: async function (server, options) {
+        _poolConfig = options;
+      
         server.route({
             method: 'GET',
-            path: '/build',
+            path: '/build/{any*}',
             handler: async (request, h) => {
                 if (process.env.DEV === "false") { throw new Error('Not Authorised!'); }
+
+                _poolConfig.config.database = (request.query.m || request.params.any == 'm') ? _poolConfig.config.masterDb : _poolConfig.config.clientDb;
+                _poolConfig.name = 'cx_builder_' + _poolConfig.config.database;
+
+                const _object_builder = require('./obj-builder').init(_poolConfig);
+
                 if (!request.query.table) {
-                    var str = _fs.readFileSync('./src/cx/data/builder/obj-builder.html', 'utf8');
+                    var str = _fs.readFileSync(_path.join(__dirname, 'obj-builder.html'), 'utf8');
                     var tableList = await _object_builder.renderTableList();
                     str = str.replace('{$tableList}', tableList);
                     return h.response(str);

@@ -17,7 +17,9 @@
     <script>
         function buildTable(tableName, business) {
             if (!tableName){ return; }
-            var url = '/build?table=' + tableName;
+            
+
+            var url = document.URL + '?table=' + tableName;
             window.open(url);
             if (business){
                 url += '&b=true';
