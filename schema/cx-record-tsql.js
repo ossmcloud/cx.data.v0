@@ -22,7 +22,7 @@ function _insert(dbRecord) {
     });
 
     // concatenate the scripts (NOTE: need to remove last comma)
-    query.sql = _core.list.trimRight(sqlInsert, ',') + ') ' + _core.text.trimRight(sqlValues, ',') + ')';
+    query.sql = _core.text.trimRight(sqlInsert, ',') + ') ' + _core.text.trimRight(sqlValues, ',') + ')';
 
     // return primary key
     if (dbRecord.table.primaryKeys[0].identity) {
@@ -53,7 +53,7 @@ function _update(dbRecord) {
 
 
     // remove last comma
-    query.sql = _core.list.trimRight(query.sql, ',');
+    query.sql = _core.text.trimRight(query.sql, ',');
 
     //
     for (var pkx = 0; pkx < dbRecord.table.primaryKeys.length; pkx++) {
@@ -65,7 +65,8 @@ function _update(dbRecord) {
 
     // OPTIMISTIC CONCURRENCY - table must have the rowVersion column (name: rowver)
     if (dbRecord.rowVersion) {
-        query.sql += ' and ' + _rowVersionFieldName + ' = @' + _rowVersionFieldName;
+        
+        query.sql += ' and ' + _rowVersionFieldName + ' = CONVERT(BINARY(8), @' + _rowVersionFieldName + ', 1)';
         query.params.push({ name: _rowVersionFieldName, value: dbRecord.rowVersion });
     }
 

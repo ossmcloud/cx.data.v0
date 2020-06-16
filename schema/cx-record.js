@@ -77,6 +77,9 @@ class DBRecord {
         this.setValue(this.#pkName, val);
     }
 
+    setRowVersion(rowVersion) {
+        this.#rowVersion = rowVersion;
+    }
     
     getValue(fieldName) {
         return this.#fields[fieldName].value;

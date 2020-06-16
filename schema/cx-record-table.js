@@ -67,7 +67,19 @@ class DBTable {
 
         return _this.records.length > 0;
     }
-   
+
+}
+
+DBTable.prototype.count = function (callback) {
+    return this.records.length;
+}
+
+DBTable.prototype.each = function (callback) {
+    _core.list.each(this.records, function (record, idx) {
+        if (callback) {
+            if (callback(record, idx) === false) { return false; }
+        }
+    });
 }
 
 DBTable.prototype.create = function (defaults) {
