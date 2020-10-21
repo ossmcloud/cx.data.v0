@@ -11,7 +11,7 @@ function _insert(dbRecord) {
     var sqlInsert = 'insert into [' + dbRecord.type + '] (';
     var sqlValues = 'values (';
 
-    _cx_core.eachProp(dbRecord.table.fields, function (key, field) {
+    _core.list.eachProp(dbRecord.table.fields, function (key, field) {
         // ignore identity keys
         if (field.identity) { return true; }
         // build sql insert statement and values statement

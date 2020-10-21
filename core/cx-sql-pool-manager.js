@@ -27,6 +27,7 @@ function DBPoolCollection() {
             if (process.env.CX_POOL_LOG) { console.log('\x1b[36m', _core.date.formatEx() + ' - reusing pool: ' + this[options.name].name + ' [last used: ' + this[options.name].lastUsed + ']'); }
             // if we have the pool just refresh last used and return it
             this[options.name].lastUsed = new Date();
+            this[options.name].useCount += 1;
         } else {
             // DEV-LOG
             if (process.env.CX_POOL_LOG) { console.log('\x1b[33m', _core.date.formatEx() + ' - opening pool: ' + options.name); }
@@ -67,7 +68,7 @@ module.exports = {
 
     printPools: function () {
         // console.log(_pools);
-        var html = '<table><thead><tr><td>name</td><td>db</td><td>last used</td><td>on</td><td>schema path</td></tr></thead><tbody>'
+        var html = '<table><thead><tr><td>name</td><td>db</td><td>use count</td><td>last used</td><td>on</td><td>schema path</td></tr></thead><tbody>'
         for (const key in _pools) {
             if (!_pools.hasOwnProperty(key)) { continue; }
             var pool = _pools[key];
@@ -75,6 +76,7 @@ module.exports = {
             html += '<tr>';
             html += '<td>' + pool.name + '</td>';
             html += '<td>' + pool.database + '</td>';
+            html += '<td>' + pool.useCount + '</td>';
             html += '<td>' + _core.date.toNow(pool.lastUsed).toString() + '</td>';
             html += '<td>' + pool.lastUsed + '</td>';
             html += '<td>' + pool.schemaPath + '</td>';

@@ -13,6 +13,7 @@ class DBPool {
     #schemaPath = null;
     #timeOut = null;
     #lastUsed = null;
+    #useCount = 0;
     #pool = null;
     #config = {};
     #pools = [];
@@ -31,6 +32,7 @@ class DBPool {
         this.#schemaPath = options.schemaPath;
         this.#timeOut = options.poolTimeOutInMinutes || options.timeOut || 720;
         this.#lastUsed = new Date();
+        this.#useCount = 1;
         this.#pool = null;
     }
 
@@ -46,6 +48,12 @@ class DBPool {
         return this.#lastUsed;
     } set lastUsed(val) {
         this.#lastUsed = val;
+    }
+
+    get useCount() {
+        return this.#useCount;
+    } set useCount(val) {
+        this.#useCount = val;
     }
 
     //

@@ -14,5 +14,6 @@ module.exports = {
     DBTable: DBTable,
 
     getPool: _cx_sql.get,
+    getPools: _cx_sql.printPools,
     builder: builderPlugin,
 }
