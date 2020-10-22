@@ -161,7 +161,9 @@ class DBRecord {
         });
 
         // TODO: we want a better error message here
-        if (this.#brokenRules.length > 0) { throw new Error('Record Validation Failed!'); }
+        if (this.#brokenRules.length > 0) {
+            throw new Error('Record Validation Failed!');
+        }
     }
 
     async save() {

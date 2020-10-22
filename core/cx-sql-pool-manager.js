@@ -11,7 +11,7 @@ const _poolsGarbageCollectionFreqInMinutes = 10;        // DEPLOY: we probably w
 // SET RECURRING PROCESS TO CLOSE UNUSED POOLS
 //
 setInterval(function () {
-    console.log(_core.date.formatEx() + ' - garbage collection...');
+    if (process.env.CX_POOL_LOG) { console.log(_core.date.formatEx() + ' - garbage collection...'); }
     _pools.garbageCollection();
 }, (60000 * _poolsGarbageCollectionFreqInMinutes));
 //
@@ -54,6 +54,7 @@ function DBPoolCollection() {
                 }
             } catch (error) {
                 // TODO: error handling
+                console.log('cx-sql-pool-manager.garbageCollection ERROR:');
                 console.log(error);
             }
         }));
@@ -67,7 +68,6 @@ module.exports = {
     },
 
     printPools: function () {
-        // console.log(_pools);
         var html = '<table><thead><tr><td>name</td><td>db</td><td>use count</td><td>last used</td><td>on</td><td>schema path</td></tr></thead><tbody>'
         for (const key in _pools) {
             if (!_pools.hasOwnProperty(key)) { continue; }

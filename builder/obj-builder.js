@@ -143,7 +143,7 @@ async function _build(tableName) {
         fieldDeclarations += ", maxLength: " + column.max_length + ", null: " + (column.is_nullable == '1') + defaultValue + " },\n"
 
         // we do not want fields that are common to most tables
-        if (column.name == 'timeStamp' || column.name == 'created' || column.name == 'createdBy' || column.name == 'modified' || column.name == 'modifiedBy') { return true; }
+        //if (column.name == 'timeStamp' || column.name == 'created' || column.name == 'createdBy' || column.name == 'modified' || column.name == 'modifiedBy') { return true; }
 
         // table fields property declarations
         var fieldProperty = '';
