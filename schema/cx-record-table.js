@@ -38,6 +38,8 @@ class DBTable {
     get query() {
         if (!this.#query) { this.#query = new DBRecordQuery(this.type); }
         return this.#query;
+    } set query(val) {
+        this.#query = val;
     }
 
     // db-context
