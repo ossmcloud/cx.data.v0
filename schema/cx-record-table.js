@@ -70,6 +70,14 @@ class DBTable {
         return _this.records.length > 0;
     }
 
+    // async fetch(id) {
+    //     if (!id) { throw new Error('DBTable::fetch - missing required argument [id]'); }
+    //     var query = _cx_sql_utils.fetch(this.type, this.primaryKeys, id);
+    //     var rawRecord = await this.db.exec(query);
+    //     if (!rawRecord) { return null; }
+    //     return this.populate(rawRecord);
+    // }
+
 }
 
 DBTable.prototype.count = function (callback) {
