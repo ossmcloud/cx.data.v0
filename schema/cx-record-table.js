@@ -70,14 +70,6 @@ class DBTable {
         return _this.records.length > 0;
     }
 
-    // async fetch(id) {
-    //     if (!id) { throw new Error('DBTable::fetch - missing required argument [id]'); }
-    //     var query = _cx_sql_utils.fetch(this.type, this.primaryKeys, id);
-    //     var rawRecord = await this.db.exec(query);
-    //     if (!rawRecord) { return null; }
-    //     return this.populate(rawRecord);
-    // }
-
 }
 
 DBTable.prototype.count = function (callback) {
@@ -108,7 +100,7 @@ DBTable.prototype.fetch = async function (id) {
     if (!id) { throw new Error('DBTable::fetch - missing required argument [id]'); }
     var query = _cx_sql_utils.fetch(this.type, this.primaryKeys, id);
     var rawRecord = await this.db.exec(query);
-    if (!rawRecord) { return null; }
+    if (!rawRecord) { throw new Error(`${this.type} record [${id}] does not exist or was deleted!`); }
     return this.populate(rawRecord);
 }
 
