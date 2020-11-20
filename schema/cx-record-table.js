@@ -13,6 +13,7 @@ class DBTable {
     #primaryKeys = [];
     #db_context = null;
     #query = null;
+    
     constructor(tableName, tableFields) {
         // TODO: validate arguments
 
@@ -28,6 +29,7 @@ class DBTable {
     }
 
     // read-only fields
+    
     get type() { return this.#tableName; }
     get fields() { return this.#tableFields; }
     get primaryKeys() { return this.#primaryKeys; }
@@ -41,6 +43,7 @@ class DBTable {
     } set query(val) {
         this.#query = val;
     }
+
 
     // db-context
     get db() {
