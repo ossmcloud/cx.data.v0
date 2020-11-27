@@ -79,7 +79,7 @@ class DBRecord {
 
     setRowVersion(rowVersion) {
         // do not set for new records
-        if (shop.isNew()) { return; }
+        if (this.isNew()) { return; }
         this.#rowVersion = rowVersion;
     }
     
