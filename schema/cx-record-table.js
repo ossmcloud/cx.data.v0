@@ -46,10 +46,19 @@ class DBTable {
 
 
     // db-context
+    // TODO: remove db property and refactor to cx where used
     get db() {
         if (!this.#db_context) { throw new Error('DB Context not set!!!'); }
         return this.#db_context;
     } set db(val) {
+        // TODO: Validate arguments
+        this.#db_context = val;
+    }
+
+    get cx() {
+        if (!this.#db_context) { throw new Error('DB Context not set!!!'); }
+        return this.#db_context;
+    } set cx(val) {
         // TODO: Validate arguments
         this.#db_context = val;
     }
@@ -105,6 +114,14 @@ DBTable.prototype.fetch = async function (id) {
     var rawRecord = await this.db.exec(query);
     if (!rawRecord) { throw new Error(`${this.type} record [${id}] does not exist or was deleted!`); }
     return this.populate(rawRecord);
+}
+
+DBTable.prototype.fetchOrNew = async function (id) {
+    if (id) {
+        return await this.fetch(id);
+    } else {
+        return this.createNew();
+    }
 }
 
 DBTable.prototype.first = function () {

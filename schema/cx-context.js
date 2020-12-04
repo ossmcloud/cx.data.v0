@@ -14,10 +14,12 @@ class DBContext {
     #pool = null;               // the SQL pool
     #transaction = null;        // holds an instance of the sql transaction in use
     #schemaPath = null;         // provides the path where the table related modules are located, these are specific to each database
-    constructor(pool, schemaPath) {
+    #credentials = null;
+    constructor(pool, schemaPath, credentials) {
         // TODO: validate arguments
         this.#pool = pool;
         this.#schemaPath = schemaPath;
+        this.#credentials = credentials;
         if (this.#schemaPath) {
             if (this.#schemaPath.substring(this.#schemaPath.length - 1, 1) != '/') {
                 this.#schemaPath = this.#schemaPath + '/';
@@ -29,6 +31,18 @@ class DBContext {
     get pool() { return this.#pool; }
     get schemaPath() { return this.#schemaPath; }
     get transaction() { return this.#transaction; }
+    get userId() {
+        if (!this.#credentials) { return null; }
+        return this.#credentials.userId;
+    }
+    get userName() {
+        if (!this.#credentials) { return null; }
+        return this.#credentials.name;
+    }
+    get userEmail() {
+        if (!this.#credentials) { return null; }
+        return this.#credentials.username;
+    }
 
     // NOTE: I need this function within the class because on DBContext.prototype this.#transaction does not work :(
     //       I do not want the #transaction property to be accessible in any way from outside the class

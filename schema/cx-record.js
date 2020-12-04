@@ -2,6 +2,7 @@
 
 //const _cx_core = require('../../cx-core');
 const _core = require('cx-core');
+const _ex = require('cx-core/errors/cx-errors');
 const _cx_sql_utils = require('./cx-record-tsql');
 const DBRecordField = require('./cx-record-field');
 
@@ -54,6 +55,7 @@ class DBRecord {
     get fields() { return this.#fields; } 
     get rowVersion() { return this.#rowVersion; }
     get brokenRules() { return this.#brokenRules; }
+    get cx() { return this.#table.cx; }
 
     get error() {
         return this.#error;
@@ -66,6 +68,12 @@ class DBRecord {
     } set created(val) {
         this.setValue('created');
     }
+    get createdBy() {
+        return this.getValue('createdBy');
+    } set created(val) {
+        this.setValue('createdBy');
+    }
+
 
     // TODO: add created-by, modified, modified-by
 
@@ -77,6 +85,19 @@ class DBRecord {
         this.setValue(this.#pkName, val);
     }
 
+    populate(options) {
+        // populate from payload
+        for (var key in options) {
+            if (key == 'accountId' || key == 'recordId') { continue; }
+            if (key == 'rowVersion') {
+                // set row version (if new record nothing will happen)
+                this.setRowVersion(options.rowVersion);
+            } else {
+                this[key] = options[key];
+            }
+        }
+    }
+
     setRowVersion(rowVersion) {
         // do not set for new records
         if (this.isNew()) { return; }
@@ -84,12 +105,17 @@ class DBRecord {
     }
     
     getValue(fieldName) {
+        if (!this.hasField(fieldName)) { throw new Error('CXRecord::setValue - Cannot find field [' + fieldValue + '] in Table object [' + this.type + '] '); }
         return this.#fields[fieldName].value;
     }
     setValue(fieldName, value) {
         var recordField = this.#fields[fieldName];
         if (!recordField) { throw new Error('CXRecord::setValue - Cannot find field [' + fieldValue + '] in Table object [' + this.type + '] '); }
         recordField.value = value;
+    }
+    hasField(fieldName) {
+        var recordField = this.#fields[fieldName];
+        return recordField != undefined;
     }
 
     onFieldChange(field) {
@@ -170,8 +196,19 @@ class DBRecord {
 
     async save() {
         try {
+            //if (!credentials) { credentials = { userId: 0, name: '- unknown -' }; }
             this.validate();
             if (this.dirty()) {
+
+                if (this.isNew()) {
+                    if (this.hasField('created')) { this.created = new Date(); }
+                    if (this.hasField('createdBy')) { this.createdBy = this.cx.userId; }
+                    //if (this.hasField('createdByText')) { this.createdByText = credentials.name; }
+                }
+
+                if (this.hasField('modified')) { this.modified = new Date(); }
+                if (this.hasField('modifiedBy')) { this.modifiedBy = this.cx.userId; }
+
                 var query = _cx_sql_utils.save(this);
                 var res = await this.table.db.exec(query);
                 this.id = res.id;
