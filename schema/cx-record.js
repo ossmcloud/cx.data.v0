@@ -105,12 +105,12 @@ class DBRecord {
     }
     
     getValue(fieldName) {
-        if (!this.hasField(fieldName)) { throw new Error('CXRecord::setValue - Cannot find field [' + fieldValue + '] in Table object [' + this.type + '] '); }
+        if (!this.hasField(fieldName)) { throw new Error('CXRecord::setValue - Cannot find field [' + fieldName + '] in Table object [' + this.type + '] '); }
         return this.#fields[fieldName].value;
     }
     setValue(fieldName, value) {
         var recordField = this.#fields[fieldName];
-        if (!recordField) { throw new Error('CXRecord::setValue - Cannot find field [' + fieldValue + '] in Table object [' + this.type + '] '); }
+        if (!recordField) { throw new Error('CXRecord::setValue - Cannot find field [' + fieldName + '] in Table object [' + this.type + '] '); }
         recordField.value = value;
     }
     hasField(fieldName) {
