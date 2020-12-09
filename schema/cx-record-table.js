@@ -68,12 +68,16 @@ class DBTable {
         throw new Error('function createNew must be implemented by derived class');
     }
 
-    async select() {
+    async select(query) {
         //if (this.query.empty()) { throw new Error('DBTable::select - [this.query] is not set!'); }
         //
         this.#records = [];
         //
-        var rawResults = await this.db.exec(this.query.build());
+        if (_core.empty(query)) {
+            query = null;
+       }
+
+        var rawResults = await this.db.exec(query || this.query.build());
         var _this = this;
         rawResults.each(function (res, idx) {
             _this.populate(res);
@@ -92,6 +96,13 @@ DBTable.prototype.each = function (callback) {
     _core.list.each(this.records, function (record, idx) {
         if (callback) {
             if (callback(record, idx) === false) { return false; }
+        }
+    });
+}
+DBTable.prototype.eachEx = function (callback) {
+    _core.list.eachEx(this, this.records, function (record, idx, t) {
+        if (callback) {
+            if (callback(record, idx, t) === false) { return false; }
         }
     });
 }
