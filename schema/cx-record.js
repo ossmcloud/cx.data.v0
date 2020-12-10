@@ -202,12 +202,12 @@ class DBRecord {
 
                 if (this.isNew()) {
                     if (this.hasField('created')) { this.created = new Date(); }
-                    if (this.hasField('createdBy')) { this.createdBy = this.cx.userId; }
+                    if (this.hasField('createdBy')) { this.createdBy = this.cx.tUserId; }
                     //if (this.hasField('createdByText')) { this.createdByText = credentials.name; }
                 }
 
                 if (this.hasField('modified')) { this.modified = new Date(); }
-                if (this.hasField('modifiedBy')) { this.modifiedBy = this.cx.userId; }
+                if (this.hasField('modifiedBy')) { this.modifiedBy = this.cx.tUserId; }
 
                 var query = _cx_sql_utils.save(this);
                 var res = await this.table.db.exec(query);
