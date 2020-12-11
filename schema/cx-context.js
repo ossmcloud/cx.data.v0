@@ -118,16 +118,12 @@ class DBContext {
 DBContext.prototype.table = function (tableName) {
     try {
         if (!this.schemaPath) { throw new Error('DBContext::table - missing required property [this.schemaPath]'); }
-
         if (!tableName) { throw new Error('DBContext::table - missing required argument [recordType]'); }
-
-        var tableName = tableName.TBL_NAME || tableName;
-
+        tableName = tableName.TBL_NAME || tableName;
         if (!tableName) { throw new Error('DBContext::table - missing required argument [recordType]'); }
-        //require('../../../cx-client/business')
         const DBTable = require(this.schemaPath + tableName);
         var table = new DBTable.Table();
-        table.db = this;
+        table.cx = this;
         return table;   
     } catch (error) {
         // TODO: better error handling if module not there

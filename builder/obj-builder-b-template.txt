@@ -2,7 +2,7 @@
 //
 // REQUIRE PERSISTENT TABLE
 //
-const _persistentTable = require('../persistent/p-{$tableName}');
+const _persistentTable = require('./persistent/p-{$tableName}');
 //
 // NOTE: BUSINESS LOGIC RELATED TO THE RECORD COLLECTION SHOULD BE BUILT HERE
 //
