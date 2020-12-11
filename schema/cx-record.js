@@ -194,6 +194,15 @@ class DBRecord {
         }
     }
 
+    async delete() {
+        // TODO: CX-DATA: implement deleted records audit table
+        var query = {
+            sql: `delete from ${this.table.type} where ${this.#pkName} = @id`,
+            params: [{ name: 'id', value: this.id }]
+        }
+        await this.cx.exec(query);
+    }
+
     async save() {
         try {
             //if (!credentials) { credentials = { userId: 0, name: '- unknown -' }; }

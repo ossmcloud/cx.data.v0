@@ -119,7 +119,6 @@ DBContext.prototype.table = function (tableName) {
     try {
         if (!this.schemaPath) { throw new Error('DBContext::table - missing required property [this.schemaPath]'); }
 
-        // TODO: do it better
         if (!tableName) { throw new Error('DBContext::table - missing required argument [recordType]'); }
 
         var tableName = tableName.TBL_NAME || tableName;
