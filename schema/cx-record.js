@@ -92,6 +92,9 @@ class DBRecord {
             if (key == 'rowVersion') {
                 // set row version (if new record nothing will happen)
                 this.setRowVersion(options.rowVersion);
+            // } else if (key == 'createdBy') {
+            //     this[key] = this.cx.tUserId;
+
             } else {
                 this[key] = options[key];
             }
