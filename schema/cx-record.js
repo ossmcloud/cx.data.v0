@@ -120,6 +120,15 @@ class DBRecord {
         var recordField = this.#fields[fieldName];
         return recordField != undefined;
     }
+    getField(fieldName) {
+        var recordField = this.#fields[fieldName];
+        return recordField;
+    }
+    getFieldDataType(fieldName) {
+        var recordField = this.#fields[fieldName];
+        if (recordField) { return recordField.tableField.dataType; }
+        return null;
+    }
 
     onFieldChange(field) {
         // set the record as edited

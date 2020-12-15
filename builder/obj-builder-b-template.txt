@@ -1,10 +1,6 @@
 'use strict'
 //
-// REQUIRE PERSISTENT TABLE
-//
 const _persistentTable = require('./persistent/p-{$tableName}');
-//
-// NOTE: BUSINESS LOGIC RELATED TO THE RECORD COLLECTION SHOULD BE BUILT HERE
 //
 class {$tableName}_Collection extends _persistentTable.Table {
     createNew(defaults) {
@@ -12,7 +8,7 @@ class {$tableName}_Collection extends _persistentTable.Table {
     }
 }
 //
-// NOTE: BUSINESS LOGIC RELATED TO THE RECORD SHOULD BE BUILT HERE
+// ----------------------------------------------------------------------------------------
 //
 class {$tableName} extends _persistentTable.Record {
     constructor(table, defaults) {
@@ -25,7 +21,7 @@ class {$tableName} extends _persistentTable.Record {
     }
 }
 //
-// EXPORTS ONLY TABLE AND RECORD
+// ----------------------------------------------------------------------------------------
 //
 module.exports = {
     Table: {$tableName}_Collection,

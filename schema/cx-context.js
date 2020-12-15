@@ -1,6 +1,5 @@
 'use strict'
 
-//const _cx_core = require('../../cx-core');
 const _core = require('cx-core');
 const _cx_sql = require('../core/cx-sql-pool-manager');
 const DBQueryResult = require('./cx-query-result');

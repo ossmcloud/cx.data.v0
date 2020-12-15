@@ -18,6 +18,7 @@ class DBRecordField {
     }
 
     get name() { return this.#name; }
+    get tableField() { return this.#tableField; }
     get valueOriginal() { return this.#valueOriginal; }
 
     get dirty() {
