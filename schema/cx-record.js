@@ -202,6 +202,9 @@ class DBRecord {
 
         // TODO: we want a better error message here
         if (this.#brokenRules.length > 0) {
+            console.log('Record Validation Failed!');
+            console.log(this);
+            console.log(this.#brokenRules);
             throw new Error('Record Validation Failed!');
         }
     }
