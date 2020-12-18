@@ -66,12 +66,12 @@ class DBRecord {
     get created() {
         return this.getValue('created');
     } set created(val) {
-        this.setValue('created');
+        this.setValue('created', val);
     }
     get createdBy() {
         return this.getValue('createdBy');
     } set createdBy(val) {
-        this.setValue('createdBy');
+        this.setValue('createdBy', val);
     }
 
 
@@ -227,8 +227,8 @@ class DBRecord {
                     //if (this.hasField('createdByText')) { this.createdByText = credentials.name; }
                 }
 
-                if (this.hasField('modified')) { this.modified = new Date(); }
-                if (this.hasField('modifiedBy')) { this.modifiedBy = this.cx.tUserId; }
+                if (this.hasField('modified')) { this.setValue('modified', new Date()); }
+                if (this.hasField('modifiedBy')) { this.setValue('modifiedBy', this.cx.tUserId); }
 
                 var query = _cx_sql_utils.save(this);
                 var res = await this.table.db.exec(query);
