@@ -70,7 +70,7 @@ class DBRecord {
     }
     get createdBy() {
         return this.getValue('createdBy');
-    } set created(val) {
+    } set createdBy(val) {
         this.setValue('createdBy');
     }
 
