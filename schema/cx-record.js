@@ -171,7 +171,7 @@ class DBRecord {
             // TODO: we do this or the check for maxLength fails, we must check the data type but we must fix the objectBuilder
             if (fname == 'created') { return true; }
             
-            var fValue = _this[fname];
+            var fValue = _this.getValue(fname);
 
             // check for NOT NULL
             if (!f.null && !f.identity) {
