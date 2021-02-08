@@ -142,7 +142,7 @@ DBContext.prototype.fetch = async function (tableName, id) {
 
 // select records from query (wraps the table function)
 DBContext.prototype.select = async function (tableName, query) {
-    
+    // TODO: 
 }
 
 module.exports = DBContext;
