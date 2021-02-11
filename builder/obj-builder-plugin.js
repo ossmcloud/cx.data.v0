@@ -15,7 +15,9 @@ exports.plugin = {
             method: 'GET',
             path: '/build/{any*}',
             handler: async (request, h) => {
-                if (process.env.DEV === "false") { throw new Error('Not Authorised!'); }
+                //if (process.env.DEV === "false") {
+                if (process.env.DEV_TOOLS != 'T') { throw new Error('Not Authorised!'); }
+                //}
 
                 _poolConfig.config.database = (request.query.m || request.params.any == 'm') ? _poolConfig.config.masterDb : _poolConfig.config.clientDb;
                 _poolConfig.name = 'cx_builder_' + _poolConfig.config.database;
