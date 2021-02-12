@@ -104,6 +104,35 @@ class DBContext {
         return result;
     }
 
+    // async execSet(query) {
+    //     // validate arguments
+    //     if (!query) { throw new Error('DBContext::exec - missing required argument [query]'); }
+    //     if (!query.sql) { throw new Error('DBContext::exec - missing required argument [query.sql]'); }
+    //     query.params = _cx_core.toArray(query.params);
+    //     // create sql query request from pool or from transaction object if there
+    //     var request = (this.transaction) ? this.transaction.request() : this.pool.pool.request();
+    //     // add parameters values
+    //     query.params.forEach(p => {
+    //         if (p.type) { request.input(p.name, p.type, p.value); }
+    //         else { request.input(p.name, p.value); }
+    //     });
+    //     // execute query and create result object
+    //     var rawResult = await request.query(query.sql);
+    //     //
+    //     var results = [];
+    //     results.push(new DBQueryResult(rawResult));
+    //     rawResult.recordsets.forEach(function (set, idx) {
+    //         if (idx > 0) {
+    //             results.push(new DBQueryResult({
+    //                 recordset: set,
+    //                 rowsAffected: [rawResult.rowsAffected[idx + 1]]
+    //             }));
+    //         }
+    //     });
+
+    //     return results;
+    // }
+
 
 
     static async getContext(config) {
