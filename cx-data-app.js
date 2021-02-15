@@ -15,5 +15,6 @@ module.exports = {
 
     getPool: _cx_sql.get,
     getPools: _cx_sql.printPools,
+    countPools: _cx_sql.countPools,
     builder: builderPlugin,
 }

@@ -67,6 +67,18 @@ module.exports = {
         return await _pools.getPool(options);
     },
 
+    countPools: function () {
+        if (!_pools) { return 0; }
+        var count = 0;
+        for (const key in _pools) {
+            if (!_pools.hasOwnProperty(key)) { continue; }
+            var pool = _pools[key];
+            if (!pool.name) { continue; }
+            count++;
+        }
+        return count;
+    },
+
     printPools: function () {
         var html = '<table><thead><tr><td>name</td><td>db</td><td>use count</td><td>last used</td><td>on</td><td>schema path</td></tr></thead><tbody>'
         for (const key in _pools) {
