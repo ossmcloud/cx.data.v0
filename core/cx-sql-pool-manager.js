@@ -18,10 +18,10 @@ setInterval(function () {
 // THE POOL COLLECTION OBJECT
 //
 function DBPoolCollection() {
-    
     this.getPool = async function (options) {
         // using unique name get existing pool (if any) or create a new one
         if (!options.name) { throw new Error('DBPoolCollection::getPool - missing required argument [options.name]'); }
+        
         if (Object.prototype.hasOwnProperty.call(this, options.name)) {
             // DEV-LOG
             if (process.env.CX_POOL_LOG) { console.log('\x1b[36m', _core.date.formatEx() + ' - reusing pool: ' + this[options.name].name + ' [last used: ' + this[options.name].lastUsed + ']'); }
@@ -80,7 +80,7 @@ module.exports = {
     },
 
     printPools: function () {
-        var html = '<table><thead><tr><td>name</td><td>db</td><td>use count</td><td>last used</td><td>on</td><td>schema path</td></tr></thead><tbody>'
+        var html = '<div class="cx-outer-container"><table class="jx-table"><thead><tr><th><b>pool name</b></th><th><b>db</b></th><th><b>use count</b></th><th><b>last used</b></th><th><b>on</b></th></tr></thead><tbody>'
         for (const key in _pools) {
             if (!_pools.hasOwnProperty(key)) { continue; }
             var pool = _pools[key];
@@ -91,10 +91,9 @@ module.exports = {
             html += '<td>' + pool.useCount + '</td>';
             html += '<td>' + _core.date.toNow(pool.lastUsed).toString() + '</td>';
             html += '<td>' + pool.lastUsed + '</td>';
-            html += '<td>' + pool.schemaPath + '</td>';
             html += '</tr>';
         }
-        html += '</tbody></table>';
+        html += '</tbody></table></div>';
         return html;
     }
 

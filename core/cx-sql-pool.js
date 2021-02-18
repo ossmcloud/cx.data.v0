@@ -10,7 +10,6 @@ class DBPool {
     // private declarations
     #name = null;
     #database = null;
-    #schemaPath = null;
     #timeOut = null;
     #lastUsed = null;
     #useCount = 0;
@@ -29,7 +28,6 @@ class DBPool {
         this.#config = options.config;
         this.#name = options.name;
         this.#database = options.config.database;
-        this.#schemaPath = options.schemaPath;
         this.#timeOut = options.poolTimeOutInMinutes || options.timeOut || 720;
         this.#lastUsed = new Date();
         this.#useCount = 1;
@@ -39,7 +37,6 @@ class DBPool {
     // public read-only properties
     get name() { return this.#name; }
     get database() { return this.#database; }
-    get schemaPath() { return this.#schemaPath; }
     get timeOut() { return this.#timeOut; }
     get pool() { return this.#pool; }
 
