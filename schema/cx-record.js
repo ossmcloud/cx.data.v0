@@ -87,6 +87,11 @@ class DBRecord {
     populate(options) {
         // populate from payload
         for (var key in options) {
+            if (key == 'accountId' && this.cx.accountId) {
+                if (options.accountId != this.cx.accountId) {
+                    throw new Error('This record is for account [' + options.accountId + '] but you have changed to a different account [' + this.cx.accountId + ']');
+                }
+            }
             if (key == 'accountId' || key == 'recordId') { continue; }
             if (key == 'rowVersion') {
                 // set row version (if new record nothing will happen)

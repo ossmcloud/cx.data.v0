@@ -14,7 +14,6 @@ class DBContext {
     #transaction = null;        // holds an instance of the sql transaction in use
     #schemaPath = null;         // provides the path where the table related modules are located, these are specific to each database
     #credentials = null;
-    #roleId = null;
     constructor(pool, schemaPath, credentials) {
         this.#pool = pool;
         this.#schemaPath = schemaPath;
