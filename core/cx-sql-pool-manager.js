@@ -53,7 +53,7 @@ function DBPoolCollection() {
                     if (process.env.CX_POOL_LOG) { console.log(_core.date.formatEx() + ' - open pool: ' + pool.name + ' [last used: ' + pool.lastUsed + ']'); }
                 }
             } catch (error) {
-                // TODO: error handling
+                // @WILLDO': error handling
                 console.log('cx-sql-pool-manager.garbageCollection ERROR:');
                 console.log(error);
             }

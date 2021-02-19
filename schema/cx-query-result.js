@@ -7,7 +7,6 @@ class DBQueryResult {
     #rowsAffected = 0;
     #subResults = [];
     constructor(result) {
-        // TODO: validate arguments
         this.#raw = result;
         this.#rows = result.recordset;
         this.#count = (result.recordset) ? result.recordset.length : 0;

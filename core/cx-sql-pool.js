@@ -65,13 +65,13 @@ class DBPool {
             delete this.#pools[this.#name];
             return close();
         };
-        // TODO: error handling
+        // @WILLDO: error handling
         this.#pool.on('error', function (err) {
             console.log(err);
         });
         // connect pool 
         await this.#pool.connect();
-        // TODO: two very close requests could come here and open the pool twice
+        // @WILLDO: two very close requests could come here and open the pool twice
         if (this.#pools[this.#name] != null) { 
 
         }

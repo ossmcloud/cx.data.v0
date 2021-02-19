@@ -1,6 +1,5 @@
 'use strict'
 
-//const _cx_core = require('../../cx-core');
 const _core = require('cx-core');
 const _cx_sql_utils = require('./cx-record-tsql');
 const DBRecordQuery = require('./cx-record-query');
@@ -15,8 +14,6 @@ class DBTable {
     #query = null;
     
     constructor(tableName, tableFields) {
-        // TODO: validate arguments
-
         this.#tableName = tableName;
         this.#tableFields = tableFields;
         // populate primary key collection
@@ -46,12 +43,11 @@ class DBTable {
 
 
     // db-context
-    // @CLEAN-UP TODO: remove db property and refactor to cx where used
+    // @CLEAN-UP: remove db property and refactor to cx where used
     get db() {
         if (!this.#db_context) { throw new Error('DB Context not set!!!'); }
         return this.#db_context;
     } set db(val) {
-        // TODO: Validate arguments
         this.#db_context = val;
     }
 
@@ -59,7 +55,6 @@ class DBTable {
         if (!this.#db_context) { throw new Error('DB Context not set!!!'); }
         return this.#db_context;
     } set cx(val) {
-        // TODO: Validate arguments
         this.#db_context = val;
     }
     

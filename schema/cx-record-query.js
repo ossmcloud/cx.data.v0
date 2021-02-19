@@ -9,7 +9,6 @@ class DBRecordQuery {
     #filters = [];
     #orderBy = [];
     constructor(tableName) {
-        // TODO: validate arguments
         this.#type = tableName;
     }
 

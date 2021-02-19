@@ -16,7 +16,6 @@ class DBContext {
     #credentials = null;
     #roleId = null;
     constructor(pool, schemaPath, credentials) {
-        // TODO: validate arguments
         this.#pool = pool;
         this.#schemaPath = schemaPath;
         this.#credentials = credentials;
@@ -154,7 +153,6 @@ DBContext.prototype.table = function (tableName) {
         table.cx = this;
         return table;   
     } catch (error) {
-        // TODO: better error handling if module not there
         throw error;
     }    
 }

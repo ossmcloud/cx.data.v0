@@ -24,7 +24,6 @@ class DBRecord {
     #error = null;
     #rowVersion = null;
     constructor(table, defaults) {
-        // TODO: validate arguments
         this.#table = table;
         if (!defaults) { defaults = {}; }
         // NOTE: this may or may not be there but it is irrelevant here, only used on update script to implement optimistic concurrency
@@ -75,7 +74,7 @@ class DBRecord {
     }
 
 
-    // TODO: add created-by, modified, modified-by
+    // TODO: add modified, modified-by
 
     get id() {
         // TODO:MULTI-PK: return comma separated ids if more than one key
@@ -210,7 +209,7 @@ class DBRecord {
     }
 
     async delete() {
-        // TODO: CX-DATA: implement deleted records audit table
+        // @WILLDO: CX-DATA: implement deleted records audit table
         var query = {
             sql: `delete from ${this.table.type} where ${this.#pkName} = @id`,
             params: [{ name: 'id', value: this.id }]
@@ -237,7 +236,7 @@ class DBRecord {
                 var res = await this.table.db.exec(query);
                 this.id = res.id;
                 this.#state = _recordState.UNCHANGED;
-                // TODO: OPTIMISTIC CONCURRENCY: RELOAD ROW-VERSION
+                // TODO-IMPORTANT: OPTIMISTIC CONCURRENCY: RELOAD ROW-VERSION
             }
             return this.id;
         } catch (error) {
