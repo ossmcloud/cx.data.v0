@@ -114,11 +114,14 @@ DBTable.prototype.populate = function (defaults) {
     return this.create(defaults);
 }
 
-DBTable.prototype.fetch = async function (id) {
+DBTable.prototype.fetch = async function (id, returnNull) {
     if (!id) { throw new Error('DBTable::fetch - missing required argument [id]'); }
     var query = _cx_sql_utils.fetch(this.type, this.primaryKeys, id);
     var rawRecord = await this.db.exec(query);
-    if (!rawRecord) { throw new Error(`${this.type} record [${id}] does not exist or was deleted!`); }
+    if (!rawRecord) {
+        if (returnNull) { return null; }
+        throw new Error(`${this.type} record [${id}] does not exist or was deleted!`);
+    }
     return this.populate(rawRecord);
 }
 
