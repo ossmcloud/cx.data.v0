@@ -224,15 +224,16 @@ class DBRecord {
 
     async save() {
         try {
-            //if (!credentials) { credentials = { userId: 0, name: '- unknown -' }; }
-            this.validate();
-            if (this.dirty()) {
+            
+            // NOTE: do this before validation
+            if (this.isNew()) {
+                if (this.hasField('created')) { this.created = new Date(); }
+                if (this.hasField('createdBy')) { this.createdBy = this.cx.tUserId; }
+            }
 
-                if (this.isNew()) {
-                    if (this.hasField('created')) { this.created = new Date(); }
-                    if (this.hasField('createdBy')) { this.createdBy = this.cx.tUserId; }
-                    //if (this.hasField('createdByText')) { this.createdByText = credentials.name; }
-                }
+            this.validate();
+
+            if (this.dirty()) {
 
                 if (this.hasField('modified')) { this.setValue('modified', new Date()); }
                 if (this.hasField('modifiedBy')) { this.setValue('modifiedBy', this.cx.tUserId); }
