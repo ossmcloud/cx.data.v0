@@ -19,6 +19,13 @@ setInterval(function () {
 //
 function DBPoolCollection() {
     this.getPool = async function (options) {
+        // 
+        if (options.noPullManager) {
+            var pool = new CXPool(this, options);
+            await pool.connect(true);
+            return pool;
+        }
+
         // using unique name get existing pool (if any) or create a new one
         if (!options.name) { throw new Error('DBPoolCollection::getPool - missing required argument [options.name]'); }
         
