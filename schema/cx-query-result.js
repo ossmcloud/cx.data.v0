@@ -49,6 +49,14 @@ DBQueryResult.prototype.each = function (callback) {
     }
 }
 
+DBQueryResult.prototype.eachAsync = async function (callback) {
+    if (!callback) { return; }
+    for (var idx = 0; idx < this.count; idx++) {
+        var res = await callback(this.rows[idx], idx);
+        if (res === false) { break; }
+    }
+}
+
 
 
 module.exports = DBQueryResult;
