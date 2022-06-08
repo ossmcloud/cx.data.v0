@@ -103,7 +103,7 @@ async function _buildSchema() {
             jsCode += "        TBL_NAME: '" + column.TABLE_NAME + "',\n";
         }
         jsCode += "        " + column.COLUMN_NAME.toUpperCase() + ": '" + column.COLUMN_NAME + "',\n";
-        
+
     });
     jsCode += "    }\n\n";
     jsCode += '}\n';
@@ -132,12 +132,18 @@ async function _build(tableName) {
         if (column.dataType == 'timestamp') { return true; }
 
         // field names 
-        fieldNames += "    " + column.name.toUpperCase() + ": '" + column.name + "',\n"; 
+        fieldNames += "    " + column.name.toUpperCase() + ": '" + column.name + "',\n";
 
         // table fields declarations
-        var defaultValue = column.defaultValue || '';
-        if (defaultValue.indexOf('getdate()') >= 0) { defaultValue = 'now'; }
-        if (defaultValue) { defaultValue = ", default: '" + defaultValue + "'"; }
+        var defaultValue = column.defaultValue;
+        if (defaultValue != null) {
+            if (defaultValue.indexOf('getdate()') >= 0) { defaultValue = 'now'; }
+            if (defaultValue == '((0))') { defaultValue = 0; }
+            if (defaultValue == '((1))') { defaultValue = 1; }
+            defaultValue = ", default: '" + defaultValue + "'";
+        } else {
+            defaultValue = '';
+        }
         fieldDeclarations += "    " + column.name + ": { name: '" + column.name + "', dataType: '" + column.dataType + "'";
         fieldDeclarations += ", pk: " + (column.primaryKey == '1') + ", identity: " + (column.is_identity == '1');
         fieldDeclarations += ", maxLength: " + column.max_length + ", null: " + (column.is_nullable == '1') + defaultValue + " },\n"
@@ -168,7 +174,7 @@ async function _build(tableName) {
 async function _build_b(tableName) {
     // the business object is generally created only ne and is very simple as it is
     // designed to hold all record-related business rules
-    
+
     var jsCode = _fs.readFileSync(_path.join(__dirname, 'obj-builder-b-template.txt'), 'utf8');
     jsCode = jsCode.replaceAll('{$tableName}', tableName);
     return jsCode;
@@ -177,7 +183,7 @@ async function _build_b(tableName) {
 
 module.exports = {
     init: function (config) {
-        _config = config; 
+        _config = config;
         return this;
     },
 

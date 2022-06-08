@@ -19,7 +19,7 @@ class DBRecord {
     #table = null;
     #state = _recordState.NEW;
     #fields = {};
-    #pkName = ''; 
+    #pkName = '';
     #brokenRules = [];
     #error = null;
     #rowVersion = null;
@@ -51,7 +51,7 @@ class DBRecord {
     // read-only properties
     get type() { return this.#table.type; }
     get table() { return this.#table; }
-    get fields() { return this.#fields; } 
+    get fields() { return this.#fields; }
     get rowVersion() { return this.#rowVersion; }
     get brokenRules() { return this.#brokenRules; }
     get cx() { return this.#table.cx; }
@@ -96,11 +96,29 @@ class DBRecord {
             if (key == 'rowVersion') {
                 // set row version (if new record nothing will happen)
                 this.setRowVersion(options.rowVersion);
-            // } else if (key == 'createdBy') {
-            //     this[key] = this.cx.tUserId;
+                // } else if (key == 'createdBy') {
+                //     this[key] = this.cx.tUserId;
 
             } else {
-                this[key] = options[key];
+
+                var field = this.getField(key);
+                if (field.tableField.dataType == 'bigint' || field.tableField.dataType == 'int') {
+                    //record[fname] = parseInt(_this.getValue(key), 10);
+                    this[key] = parseInt(options[key], 10);
+                } else if (field.tableField.dataType == 'money' || field.tableField.dataType == 'decimal') {
+                    //record[fname] = parseFloat(_this.getValue(fname));
+                    this[key] = parseFloat(options[key]);
+                } else if (field.tableField.dataType == 'bit') {
+                    this[key] = (options[key] == 'true' || options[key] == '1' || options[key] == 'T');
+                } else if (field.tableField.dataType == 'date' || field.tableField.dataType == 'datetime') {
+                    //record[fname] = new Date((_this.getValue(fname)));
+                    this[key] = new Date(options[key]);
+                } else {
+                    //record[fname] = _this.getValue(fname);
+                    this[key] = options[key];
+                }
+
+
             }
         }
     }
@@ -110,7 +128,7 @@ class DBRecord {
         if (this.isNew()) { return; }
         this.#rowVersion = rowVersion;
     }
-    
+
     getValue(fieldName) {
         if (!this.hasField(fieldName)) { throw new Error('CXRecord::setValue - Cannot find field [' + fieldName + '] in Table object [' + this.type + '] '); }
         return this.#fields[fieldName].value;
@@ -161,6 +179,30 @@ class DBRecord {
         return '[object ' + this.constructor.name + ']';
     }
 
+    toObject() {
+        var _this = this;
+        var record = {};
+        _core.list.eachProp(this.fields, function (fname, field) {
+            if (field.tableField.identity) { return; }
+            if (field.tableField.identity) { return; }
+            var value = _this.getValue(fname);
+            if (value != null && value != undefined) {
+
+                if (field.tableField.dataType == 'bigint' || field.tableField.dataType == 'int') {
+                    record[fname] = parseInt(_this.getValue(fname), 10);
+                } else if (field.tableField.dataType == 'money' || field.tableField.dataType == 'decimal') {
+                    record[fname] = parseFloat(_this.getValue(fname));
+                } else if (field.tableField.dataType == 'date' || field.tableField.dataType == 'datetime') {
+                    record[fname] = new Date((_this.getValue(fname)));
+                } else {
+                    record[fname] = _this.getValue(fname);
+                }
+
+            }
+        });
+        return record;
+    }
+
 
     validate() {
         this.#brokenRules = [];
@@ -174,7 +216,7 @@ class DBRecord {
         _core.list.eachProp(this.table.fields, function (fname, f) {
             // TODO: we do this or the check for maxLength fails, we must check the data type but we must fix the objectBuilder
             if (fname == 'created') { return true; }
-            
+
             var fValue = _this.getValue(fname);
 
             // check for NOT NULL
@@ -209,7 +251,14 @@ class DBRecord {
             console.log('Record Validation Failed!');
             console.log(this);
             console.log(this.#brokenRules);
-            throw new Error('Record Validation Failed!');
+
+            var brokenRulesMsg = '<u>Record Validation Failed:</u><ul>';
+            _core.list.each(this.#brokenRules, function (brokenRule) {
+                brokenRulesMsg += ('<li>' + brokenRule.field.name + ': ' + brokenRule.message + '</li>');
+            });
+            brokenRulesMsg += '</ul>';
+
+            throw new Error(brokenRulesMsg);
         }
     }
 
@@ -224,7 +273,7 @@ class DBRecord {
 
     async save() {
         try {
-            
+
             // NOTE: do this before validation
             if (this.isNew()) {
                 if (this.hasField('created')) { this.created = new Date(); }

@@ -13,13 +13,14 @@ class DBRecordField {
         this.#record = record;
         this.#tableField = tableField;
         this.#name = tableField.name;
-        this.#value = defaultValue; 
+        this.#value = defaultValue;
         this.#valueOriginal = this.value;
     }
 
     get name() { return this.#name; }
     get tableField() { return this.#tableField; }
     get valueOriginal() { return this.#valueOriginal; }
+
 
     get dirty() {
         return this.value != this.#valueOriginal;
@@ -44,7 +45,7 @@ class DBRecordField {
         if (this.#on_change.indexOf(handler)) { return; }
         this.#on_change.push(handler);
     }
-    
+
 
     static getValue(fromObject, fieldName, defaultValue) {
         if (!fromObject) { fromObject = {}; }
