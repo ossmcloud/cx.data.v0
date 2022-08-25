@@ -102,23 +102,26 @@ class DBRecord {
             } else {
 
                 var field = this.getField(key);
-                if (field.tableField.dataType == 'bigint' || field.tableField.dataType == 'int') {
-                    //record[fname] = parseInt(_this.getValue(key), 10);
-                    this[key] = parseInt(options[key], 10);
-                } else if (field.tableField.dataType == 'money' || field.tableField.dataType == 'decimal') {
-                    //record[fname] = parseFloat(_this.getValue(fname));
-                    this[key] = parseFloat(options[key]);
-                } else if (field.tableField.dataType == 'bit') {
-                    this[key] = (options[key] == 'true' || options[key] == '1' || options[key] == 'T');
-                } else if (field.tableField.dataType == 'date' || field.tableField.dataType == 'datetime') {
-                    //record[fname] = new Date((_this.getValue(fname)));
-                    this[key] = new Date(options[key]);
+                if (!field) {
+                    key = key;
                 } else {
-                    //record[fname] = _this.getValue(fname);
-                    this[key] = options[key];
+                    if (field.tableField.dataType == 'bigint' || field.tableField.dataType == 'int') {
+                        //record[fname] = parseInt(_this.getValue(key), 10);
+                        this[key] = parseInt(options[key], 10);
+                    } else if (field.tableField.dataType == 'money' || field.tableField.dataType == 'decimal') {
+                        //record[fname] = parseFloat(_this.getValue(fname));
+                        this[key] = parseFloat(options[key]);
+                    } else if (field.tableField.dataType == 'bit') {
+                        this[key] = (options[key] == 'true' || options[key] == '1' || options[key] == 'T');
+                    } else if (field.tableField.dataType == 'date' || field.tableField.dataType == 'datetime') {
+                        //record[fname] = new Date((_this.getValue(fname)));
+                        this[key] = new Date(options[key]);
+                    } else {
+                        //record[fname] = _this.getValue(fname);
+                        this[key] = options[key];
+                    }
+
                 }
-
-
             }
         }
     }
