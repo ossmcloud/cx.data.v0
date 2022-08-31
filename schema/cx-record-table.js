@@ -102,6 +102,18 @@ DBTable.prototype.eachEx = function (callback) {
     });
 }
 
+DBTable.prototype.find = function (filters) {
+    var res = [];
+    this.each(function (record, idx) {
+        var filterIn = false;
+        _core.list.each(filters, function (filter, idx) {
+            
+        });
+        
+
+    });
+}
+
 DBTable.prototype.create = function (defaults) {
     // NOTE: this.createNew is implemented on derived classes
     var record = this.createNew(defaults);
