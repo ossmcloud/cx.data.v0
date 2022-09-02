@@ -94,6 +94,13 @@ DBTable.prototype.each = function (callback) {
         }
     });
 }
+DBTable.prototype.eachAsync = async function (callback) {
+    if (!callback) { return; }
+    for (var idx = 0; idx < this.records.length; idx++) {
+        var res = await callback(this.records[idx], idx);
+        if (res === false) { return false; }
+    }
+}
 DBTable.prototype.eachEx = function (callback) {
     _core.list.eachEx(this, this.records, function (record, idx, t) {
         if (callback) {
