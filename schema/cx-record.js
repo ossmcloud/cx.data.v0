@@ -55,6 +55,7 @@ class DBRecord {
     get rowVersion() { return this.#rowVersion; }
     get brokenRules() { return this.#brokenRules; }
     get cx() { return this.#table.cx; }
+    get state() { return this.#state; }
 
     get error() {
         return this.#error;
