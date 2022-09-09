@@ -225,7 +225,8 @@ class DBRecord {
 
             // check for NOT NULL
             if (!f.null && !f.identity) {
-                if (fValue === null || fValue === undefined || fValue === '') {
+                //if (fValue === null || fValue === undefined || fValue === '') {
+                if (fValue === null || fValue === undefined) {
                     _this.#brokenRules.push({
                         field: f,
                         message: 'null value not allowed'
