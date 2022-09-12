@@ -83,7 +83,7 @@ class DBTable {
 
 }
 
-DBTable.prototype.count = function (callback) {
+DBTable.prototype.count = function () {
     return this.records.length;
 }
 
