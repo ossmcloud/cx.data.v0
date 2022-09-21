@@ -113,7 +113,7 @@ class DBRecord {
                         //record[fname] = parseFloat(_this.getValue(fname));
                         this[key] = parseFloat(options[key]);
                     } else if (field.tableField.dataType == 'bit') {
-                        this[key] = (options[key] == 'true' || options[key] == '1' || options[key] == 'T');
+                        this[key] = (options[key] == 'true' || options[key] == '1' || options[key] == 'T' || options[key] == 'on');
                     } else if (field.tableField.dataType == 'date' || field.tableField.dataType == 'datetime') {
                         //record[fname] = new Date((_this.getValue(fname)));
                         this[key] = new Date(options[key]);
