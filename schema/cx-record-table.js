@@ -144,6 +144,29 @@ DBTable.prototype.fetch = async function (id, returnNull) {
     return this.populate(rawRecord);
 }
 
+DBTable.prototype.lookUp = async function (id, fieldNames) {
+    if (!fieldNames) { return null; }
+    if (!Array.isArray(fieldNames)) { fieldNames = [fieldNames]; }
+
+    var sql = 'select ' + fieldNames[0];
+    _core.list.each(fieldNames, function (fieldName, idx) {
+        if (idx > 0) {
+            sql += `, ${fieldName}`;
+        }
+    });
+    // TODO: fix for multi pks
+    sql += ` from ${this.type} where ${this.primaryKeys[0].name} = @${this.primaryKeys[0].name}`;
+
+    var query = {
+        sql: sql, noResult: 'null', returnFirst: true,
+        params: [{ name: this.primaryKeys[0].name, value: id }]
+    }
+
+    var res = await this.db.exec(query);
+    if (fieldNames.length == 1) { return res[fieldNames[0]]; }
+    return res;
+}
+
 DBTable.prototype.fetchOrNew = async function (id) {
     if (id) {
         return await this.fetch(id);
