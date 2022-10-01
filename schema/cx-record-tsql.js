@@ -58,7 +58,7 @@ function _update(dbRecord) {
     //
     for (var pkx = 0; pkx < dbRecord.table.primaryKeys.length; pkx++) {
         var pk = dbRecord.table.primaryKeys[pkx];
-        query.sql += ((pkx == 0) ? ' where ' : 'and');
+        query.sql += ((pkx == 0) ? ' where ' : ' and ');
         query.sql += '[' + pk.name + '] = @' + pk.name;
         query.params.push({ name: pk.name, value: dbRecord[pk.name] });
     }
