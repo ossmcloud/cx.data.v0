@@ -8,7 +8,7 @@ const _rowVersionFieldName = 'rowver';
 function _insert(dbRecord) {
     var query = { sql: '', params: [] };
 
-    var sqlInsert = 'insert into [' + dbRecord.type + '] (';
+    var sqlInsert = 'insert into [' + dbRecord.table.type + '] (';
     var sqlValues = 'values (';
 
     _core.list.eachProp(dbRecord.table.fields, function (key, field) {
@@ -40,7 +40,7 @@ function _insert(dbRecord) {
 
 function _update(dbRecord) {
     var query = { sql: '', params: [] };
-    query.sql = 'update [' + dbRecord.type + '] set ';
+    query.sql = 'update [' + dbRecord.table.type + '] set ';
     // loop field and add the update for the field only if it is dirty
     _core.list.eachProp(dbRecord.fields, function (key, field) {
         if (field.dirty) {
