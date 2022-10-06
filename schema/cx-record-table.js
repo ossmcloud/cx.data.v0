@@ -144,6 +144,18 @@ DBTable.prototype.fetch = async function (id, returnNull) {
     return this.populate(rawRecord);
 }
 
+DBTable.prototype.delete = async function (id, noErrorIfNotFound) {
+    if (!id) { throw new Error('DBTable::delete - missing required argument [id]'); }
+    var query = _cx_sql_utils.delete(this.type, this.primaryKeys, id);
+    var queryRes = await this.db.exec(query);
+    if (queryRes.rowsAffected==0) {
+        if (noErrorIfNotFound) { return; }
+        throw new Error(`${this.type} record [${id}] does not exist or was deleted!`);
+    }
+    return;
+}
+
+
 DBTable.prototype.lookUp = async function (id, fieldNames) {
     if (!fieldNames) { return null; }
     if (!Array.isArray(fieldNames)) { fieldNames = [fieldNames]; }

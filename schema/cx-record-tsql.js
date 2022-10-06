@@ -102,7 +102,7 @@ function _fetch(recordType, primaryKeys, ids) {
     for (var pkx = 0; pkx < primaryKeys.length; pkx++) {
         var pk = primaryKeys[pkx];
         //
-        query.sql += ((pkx == 0) ? ' where ' : 'and');
+        query.sql += ((pkx == 0) ? ' where ' : ' and ');
         query.sql += '[' + pk.name + '] = @' + pk.name;
         //
         query.params.push({ name: pk.name, value: ids[pkx] });
@@ -115,12 +115,42 @@ function _fetch(recordType, primaryKeys, ids) {
 }
 
 
+function _delete(recordType, primaryKeys, ids) {
+    if (!recordType) { throw new Error('DBUtils::_delete - missing required argument [recordType]'); }
+
+    ids = _core.list.toArray(ids);
+    primaryKeys = _core.list.toArray(primaryKeys);
+
+    if (ids.length == 0) { throw new Error('DBUtils::_delete - missing required argument [ids]'); }
+    if (primaryKeys.length == 0) { throw new Error('DBUtils::_delete - missing required argument [primaryKeys]'); }
+    if (ids.length != primaryKeys.length) { throw new Error('DBUtils::_delete - invalid arguments [primaryKeys] and [ids] must contain same number of items'); }
+
+    var query = { sql: '', params: [] };
+    query.sql = 'delete from [' + recordType + ']';
+
+    for (var pkx = 0; pkx < primaryKeys.length; pkx++) {
+        var pk = primaryKeys[pkx];
+        //
+        query.sql += ((pkx == 0) ? ' where ' : ' and ');
+        query.sql += '[' + pk.name + '] = @' + pk.name;
+        //
+        query.params.push({ name: pk.name, value: ids[pkx] });
+    }
+
+    // query.noResult = 'null';
+    // query.returnFirst = true;
+
+    return query;
+}
+
+
 
 
 
 module.exports = {
     save: _save,
     fetch: _fetch,
+    delete: _delete,
 
     get RowVersionFieldName() {
         return _rowVersionFieldName;
