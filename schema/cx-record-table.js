@@ -64,19 +64,14 @@ class DBTable {
     }
 
     async select(query) {
-        //if (this.query.empty()) { throw new Error('DBTable::select - [this.query] is not set!'); }
         //
         this.#records = [];
-        //
-        if (_core.empty(query)) {
-            query = null;
-       }
+        if (_core.empty(query)) { query = null; }
 
         var rawResults = await this.db.exec(query || this.query.build());
+        
         var _this = this;
-        rawResults.each(function (res, idx) {
-            _this.populate(res);
-        });
+        rawResults.each(function (res, idx) { _this.populate(res); });
 
         return _this.records.length > 0;
     }

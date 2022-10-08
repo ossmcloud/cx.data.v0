@@ -86,6 +86,21 @@ class DBRecordQuery {
             if (ox > 0) { query.sql += ','; }
             query.sql += (ordBy.name + ' ' + ordBy.direction);
         });
+
+        // @PAGING:
+        if (this.paging) {
+            // query.sql += 'OFFSET ' + (((this.paging.page || 1) - 1) * (this.paging.pageSize || 100)) + ' ROWS';
+            // query.sql += 'FETCH NEXT ' + (this.paging.pageSize || 100) + ' ROWS ONLY';
+            this.paging.page = parseInt(this.paging.page);
+            if (isNaN(this.paging.page) || this.paging.page <= 0) { this.paging.page = 1; }
+
+            this.paging.pageSize = parseInt(this.paging.pageSize);
+            if (isNaN(this.paging.pageSize) || this.paging.pageSize <= 0) { this.paging.pageSize = 100; }
+
+            query.sql += ' OFFSET ' + ((this.paging.page - 1) * this.paging.pageSize) + ' ROWS'
+            query.sql += ' FETCH NEXT ' + this.paging.pageSize + ' ROWS ONLY'
+        }
+
         return query;
     }
 }
@@ -135,7 +150,7 @@ class DBRecordQueryColumn {
         this.#sort = options.sort || 'ASC';
         this.#alias = options.alias || null;
     }
-    
+
     //
     get name() { return this.#name; }
     get sort() { return this.#sort; }

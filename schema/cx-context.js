@@ -71,6 +71,20 @@ class DBContext {
         if (!query) { throw new Error('DBContext::exec - missing required argument [query]'); }
         if (!query.sql) { throw new Error('DBContext::exec - missing required argument [query.sql]'); }
         query.params = _core.list.toArray(query.params);
+
+        // @PAGING:
+        if (query.paging) {
+            query.paging.page = parseInt(query.paging.page);
+            if (isNaN(query.paging.page) || query.paging.page<=0) { query.paging.page = 1; }
+
+            query.paging.pageSize = parseInt(query.paging.pageSize);
+            if (isNaN(query.paging.pageSize) || query.paging.pageSize <= 0) { query.paging.pageSize = 100; }
+
+            query.sql += ' OFFSET ' + ((query.paging.page - 1) * query.paging.pageSize) + ' ROWS'
+            query.sql += ' FETCH NEXT ' + query.paging.pageSize + ' ROWS ONLY'
+        }
+
+
         // create sql query request from pool or from transaction object if there
         var request = (this.transaction) ? this.transaction.request() : this.pool.pool.request();
         // add parameters values
