@@ -65,15 +65,41 @@ class DBTable {
 
     async select(query) {
         //
+        var _this = this;
         this.#records = [];
         if (_core.empty(query)) { query = null; }
 
-        var rawResults = await this.db.exec(query || this.query.build());
+        query = query || this.query.build();
+
+        if (query.paging && !query.sqlCount) {
+            try {
+                var sql = query.sql.toLowerCase().indexOf(' from');
+                if (sql > 0) {
+                    var sqlOrder = query.sql.toLowerCase().indexOf('order by');
+                    if (sqlOrder < 0) { sqlOrder = query.sql.length; }
+                    query.sqlCount = 'select count(*) as recordCount ' + query.sql.substr(sql, sqlOrder - sql);
+                }
+            } catch (error) {
+                // ignore issue here, don't want to stop for this only
+            }
+        }
         
-        var _this = this;
+        var rawResults = await this.db.exec(query);
         rawResults.each(function (res, idx) { _this.populate(res); });
 
-        return _this.records.length > 0;
+        if (query.paging && query.sqlCount) {
+            try {
+                query.sql = query.sqlCount;
+                query.returnFirst = true;
+                query.paging = false;
+                var rawResults = await this.db.exec(query);
+                this.records.count = rawResults.recordCount;
+            } catch (error) {
+                // ignore issue here, don't want to stop for this only
+            }
+        }
+        
+        return this.records.length > 0;
     }
 
 }

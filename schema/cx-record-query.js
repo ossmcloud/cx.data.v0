@@ -61,8 +61,7 @@ class DBRecordQuery {
     }
 
     build() {
-        var query = { sql: '', params: [] };
-        query.sql = 'select ';
+        var query = { sql: 'select ', sqlCount: 'select count(*) ', params: [] };
         if (this.columns.length == 0) { this.addColumn('*'); }
 
         var _this = this;
@@ -73,6 +72,8 @@ class DBRecordQuery {
             if (col.sort) { _this.addOrderBy(col.name, col.sort); }
         });
         query.sql += (' from ' + this.type);
+        query.sqlCount += (' from ' + this.type);
+        
         _core.list.each(this.filters, function (fil, fx) {
             query.sql += (fx == 0) ? ' where ' : ' and ';
             query.sql += (fil.name + ' ' + fil.operator + ' @' + fil.name);
@@ -80,6 +81,10 @@ class DBRecordQuery {
                 name: fil.name,
                 value: fil.value,
             });
+
+            query.sqlCount += (fx == 0) ? ' where ' : ' and ';
+            query.sqlCount += (fil.name + ' ' + fil.operator + ' @' + fil.name);
+            
         });
         if (this.orderBy.length > 0) { query.sql += ' order by '; }
         _core.list.each(this.orderBy, function (ordBy, ox) {
