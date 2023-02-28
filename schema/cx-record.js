@@ -115,8 +115,9 @@ class DBRecord {
                     } else if (field.tableField.dataType == 'bit') {
                         this[key] = (options[key] == 'true' || options[key] == '1' || options[key] == 'T' || options[key] == 'on');
                     } else if (field.tableField.dataType == 'date' || field.tableField.dataType == 'datetime') {
-                        //record[fname] = new Date((_this.getValue(fname)));
-                        this[key] = new Date(options[key]);
+                        if (options[key]) {
+                            this[key] = new Date(options[key]);
+                        }
                     } else {
                         //record[fname] = _this.getValue(fname);
                         this[key] = options[key];
