@@ -196,7 +196,7 @@ DBTable.prototype.lookUp = async function (id, fieldNames) {
     }
 
     var res = await this.db.exec(query);
-    if (fieldNames.length == 1) { return res[fieldNames[0]]; }
+    if (fieldNames.length == 1 && res) { return res[fieldNames[0]]; }
     return res;
 }
 
