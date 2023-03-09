@@ -202,7 +202,9 @@ DBTable.prototype.lookUp = async function (id, fieldNames) {
 
 DBTable.prototype.fetchOrNew = async function (id) {
     if (id) {
-        return await this.fetch(id);
+        var rec = await this.fetch(id);
+        if (rec) { return rec; }
+        return this.createNew();
     } else {
         return this.createNew();
     }
