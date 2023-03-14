@@ -63,6 +63,10 @@ class DBTable {
         throw new Error('function createNew must be implemented by derived class');
     }
 
+    setRecords(records) {
+        this.#records = records;
+    }
+
     async select(query) {
         //
         var _this = this;
