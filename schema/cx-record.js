@@ -270,10 +270,17 @@ class DBRecord {
 
     async delete() {
         // @WILLDO: CX-DATA: implement deleted records audit table
-        var query = {
-            sql: `delete from ${this.table.type} where ${this.#pkName} = @id`,
-            params: [{ name: 'id', value: this.id }]
+        // var query = {
+        //     sql: `delete from ${this.table.type} where ${this.#pkName} = @id`,
+        //     params: [{ name: 'id', value: this.id }]
+        // }
+        var ids = [];
+        for (var pkx = 0; pkx < this.table.primaryKeys.length; pkx++) {
+            var propName = this.table.primaryKeys[pkx].name;
+            var propValue = this[propName];
+            ids.push(propValue);
         }
+        var query = _cx_sql_utils.delete(this.table.type, this.table.primaryKeys, ids);
         await this.cx.exec(query);
     }
 
