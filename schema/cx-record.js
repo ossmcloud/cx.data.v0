@@ -108,10 +108,10 @@ class DBRecord {
                 } else {
                     if (field.tableField.dataType == 'bigint' || field.tableField.dataType == 'int') {
                         //record[fname] = parseInt(_this.getValue(key), 10);
-                        this[key] = parseInt(options[key], 10);
+                        this[key] = parseInt(options[key] || 0, 10);
                     } else if (field.tableField.dataType == 'money' || field.tableField.dataType == 'decimal') {
                         //record[fname] = parseFloat(_this.getValue(fname));
-                        this[key] = parseFloat(options[key]);
+                        this[key] = parseFloat(options[key] || 0);
                     } else if (field.tableField.dataType == 'bit') {
                         this[key] = (options[key] == 'true' || options[key] == '1' || options[key] == 'T' || options[key] == 'on');
                     } else if (field.tableField.dataType == 'date' || field.tableField.dataType == 'datetime') {

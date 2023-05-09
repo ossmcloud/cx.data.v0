@@ -51,7 +51,7 @@ class DBContext {
             // begin
             await this.transaction.begin();
             // do work
-            await callback();
+            await callback(this);
             // commit
             await this.transaction.commit();
         } catch (error) {
