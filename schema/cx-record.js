@@ -108,7 +108,11 @@ class DBRecord {
                 } else {
                     if (field.tableField.dataType == 'bigint' || field.tableField.dataType == 'int') {
                         //record[fname] = parseInt(_this.getValue(key), 10);
-                        this[key] = parseInt(options[key] || 0, 10);
+                        if (field.tableField.null && (options[key] == '' || options[key] == null || options[key] == undefined)) {
+                            this[key] = null;   
+                        } else {
+                            this[key] = parseInt(options[key] || 0, 10);
+                        }
                     } else if (field.tableField.dataType == 'money' || field.tableField.dataType == 'decimal') {
                         //record[fname] = parseFloat(_this.getValue(fname));
                         this[key] = parseFloat(options[key] || 0);
