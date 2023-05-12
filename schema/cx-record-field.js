@@ -23,7 +23,11 @@ class DBRecordField {
 
 
     get dirty() {
-        return this.value != this.#valueOriginal;
+        if (this.tableField.dataType == 'date') {
+            return (this.value || '').toString() !== (this.#valueOriginal || '').toString();    
+        } else {
+            return this.value != this.#valueOriginal;
+        }
     }
 
     get value() {

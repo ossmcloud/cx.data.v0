@@ -63,6 +63,10 @@ class DBTable {
         throw new Error('function createNew must be implemented by derived class');
     }
 
+    setRecords(records) {
+        this.#records = records;
+    }
+
     async select(query) {
         //
         var _this = this;
@@ -196,13 +200,15 @@ DBTable.prototype.lookUp = async function (id, fieldNames) {
     }
 
     var res = await this.db.exec(query);
-    if (fieldNames.length == 1) { return res[fieldNames[0]]; }
+    if (fieldNames.length == 1 && res) { return res[fieldNames[0]]; }
     return res;
 }
 
 DBTable.prototype.fetchOrNew = async function (id) {
     if (id) {
-        return await this.fetch(id);
+        var rec = await this.fetch(id);
+        if (rec) { return rec; }
+        return this.createNew();
     } else {
         return this.createNew();
     }

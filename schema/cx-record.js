@@ -108,10 +108,14 @@ class DBRecord {
                 } else {
                     if (field.tableField.dataType == 'bigint' || field.tableField.dataType == 'int') {
                         //record[fname] = parseInt(_this.getValue(key), 10);
-                        this[key] = parseInt(options[key], 10);
+                        if (field.tableField.null && (options[key] == '' || options[key] == null || options[key] == undefined)) {
+                            this[key] = null;   
+                        } else {
+                            this[key] = parseInt(options[key] || 0, 10);
+                        }
                     } else if (field.tableField.dataType == 'money' || field.tableField.dataType == 'decimal') {
                         //record[fname] = parseFloat(_this.getValue(fname));
-                        this[key] = parseFloat(options[key]);
+                        this[key] = parseFloat(options[key] || 0);
                     } else if (field.tableField.dataType == 'bit') {
                         this[key] = (options[key] == 'true' || options[key] == '1' || options[key] == 'T' || options[key] == 'on');
                     } else if (field.tableField.dataType == 'date' || field.tableField.dataType == 'datetime') {
@@ -270,10 +274,17 @@ class DBRecord {
 
     async delete() {
         // @WILLDO: CX-DATA: implement deleted records audit table
-        var query = {
-            sql: `delete from ${this.table.type} where ${this.#pkName} = @id`,
-            params: [{ name: 'id', value: this.id }]
+        // var query = {
+        //     sql: `delete from ${this.table.type} where ${this.#pkName} = @id`,
+        //     params: [{ name: 'id', value: this.id }]
+        // }
+        var ids = [];
+        for (var pkx = 0; pkx < this.table.primaryKeys.length; pkx++) {
+            var propName = this.table.primaryKeys[pkx].name;
+            var propValue = this[propName];
+            ids.push(propValue);
         }
+        var query = _cx_sql_utils.delete(this.table.type, this.table.primaryKeys, ids);
         await this.cx.exec(query);
     }
 
