@@ -107,6 +107,7 @@ class DBTable {
     }
 
     queryFromParams(query, params, tableAlias, callback) {
+        if (tableAlias) { tableAlias = '.' + tableAlias; }
         for (var paramName in params) {
             if (paramName == 'page') { continue; }
             if (!params[paramName]) { continue; }
@@ -129,7 +130,7 @@ class DBTable {
 
                 if (callback && callback({ paramName: paramName, fieldName: fieldName, isToFilter: isToFilter, operator: operator }) === false) { continue; }
 
-                query.sql += ` and ${tableAlias}.${fieldName} ${operator} @${paramName}`;
+                query.sql += ` and ${tableAlias}${fieldName} ${operator} @${paramName}`;
                 query.params.push({ name: paramName, value: params[paramName] });
             }
         }
