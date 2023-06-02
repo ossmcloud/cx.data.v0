@@ -107,7 +107,8 @@ class DBTable {
     }
 
     queryFromParams(query, params, tableAlias, callback) {
-        if (tableAlias) { tableAlias = '.' + tableAlias; }
+        if (tableAlias === undefined) { tableAlias = ''; }
+        if (tableAlias) { tableAlias = tableAlias + '.'; }
         for (var paramName in params) {
             if (paramName == 'page') { continue; }
             if (!params[paramName]) { continue; }
@@ -119,6 +120,7 @@ class DBTable {
             if (this.fields[fieldName]) {
                 var field = this.fields[fieldName];
                 var operator = '=';
+                var paramValue = params[paramName];
 
                 if (field.dataType == 'datetime' || field.dataType == 'int' || field.dataType == 'bigint' || field.dataType == 'money') {
                     if (hasToFilter) {
@@ -126,12 +128,17 @@ class DBTable {
                     }
                 } else if (field.dataType == 'varchar') {
                     operator = 'like';
+                    if (paramValue[paramValue.length - 1] != '%') {
+                        paramValue = `${paramValue}%`;
+                    }
                 }
 
                 if (callback && callback({ paramName: paramName, fieldName: fieldName, isToFilter: isToFilter, operator: operator }) === false) { continue; }
 
                 query.sql += ` and ${tableAlias}${fieldName} ${operator} @${paramName}`;
-                query.params.push({ name: paramName, value: params[paramName] });
+
+                if (!query.params) { query.params = []; }
+                query.params.push({ name: paramName, value: paramValue });
             }
         }
 
