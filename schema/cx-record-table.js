@@ -106,6 +106,45 @@ class DBTable {
         return this.records.length > 0;
     }
 
+    queryFromParams(query, params, tableAlias, callback) {
+        if (tableAlias === undefined) { tableAlias = ''; }
+        if (tableAlias) { tableAlias = tableAlias + '.'; }
+        for (var paramName in params) {
+            if (paramName == 'page') { continue; }
+            if (!params[paramName]) { continue; }
+            var fieldName = paramName;
+            var isToFilter = paramName.substring(paramName.length - 2) == 'To';
+            var hasToFilter = (isToFilter) ? (params[paramName.substring(0, paramName.length-2)] != undefined) : (params[paramName + 'To'] != undefined);
+
+            if (isToFilter) { fieldName = fieldName.substring(0, paramName.length - 2); }
+            if (this.fields[fieldName]) {
+                var field = this.fields[fieldName];
+                var operator = '=';
+                var paramValue = params[paramName];
+
+                if (field.dataType == 'datetime' || field.dataType == 'int' || field.dataType == 'bigint' || field.dataType == 'money') {
+                    if (hasToFilter) {
+                        operator = (isToFilter) ? '<=' : '>=';
+                    }
+                } else if (field.dataType == 'varchar') {
+                    operator = 'like';
+                    if (paramValue[paramValue.length - 1] != '%') {
+                        paramValue = `${paramValue}%`;
+                    }
+                }
+
+                if (callback && callback({ paramName: paramName, fieldName: fieldName, isToFilter: isToFilter, operator: operator }) === false) { continue; }
+
+                query.sql += ` and ${tableAlias}${fieldName} ${operator} @${paramName}`;
+
+                if (!query.params) { query.params = []; }
+                query.params.push({ name: paramName, value: paramValue });
+            }
+        }
+
+    }
+
+
 }
 
 DBTable.prototype.count = function () {
