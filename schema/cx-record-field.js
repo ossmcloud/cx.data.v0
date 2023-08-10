@@ -39,7 +39,7 @@ class DBRecordField {
             try {
                 onChange(this);
             } catch (error) {
-                // TODO: error handling
+                // ignore
                 console.log(error);
             }
         });

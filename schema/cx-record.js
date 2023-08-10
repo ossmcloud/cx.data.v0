@@ -40,7 +40,7 @@ class DBRecord {
             this.#fields[key].onChange(this.onFieldChange);
             // if a primary key get the field name so we can use for the 'id' property
             if (field.pk) {
-                // TODO:MULTI-PK: build comma separated pk names for the property
+                // @@TODO: @@MULTI-PK: build comma separated pk names for the property - NOT SURE
                 this.#pkName = key;
             }
         }
@@ -75,13 +75,24 @@ class DBRecord {
     }
 
 
-    // TODO: add modified, modified-by
+    get modified() {
+        return this.getValue('modified');
+    } set modified(val) {
+        this.setValue('modified', val);
+    }
+    get modifiedBy() {
+        return this.getValue('modifiedBy');
+    } set modifiedBy(val) {
+        this.setValue('modifiedBy', val);
+    }
+
+
 
     get id() {
-        // TODO:MULTI-PK: return comma separated ids if more than one key
+        // @@TODO: @@MULTI-PK: return comma separated ids if more than one key
         return this.getValue(this.#pkName);
     } set id(val) {
-        // TODO:MULTI-PK: parse comma separated ids if more than one key
+        // @@TODO: @@MULTI-PK: parse comma separated ids if more than one key
         this.setValue(this.#pkName, val);
     }
 
@@ -216,14 +227,14 @@ class DBRecord {
     validate() {
         this.#brokenRules = [];
 
-        // TODO: CX-RECORD:: NEED TO FINE TUNE THIS ROUTINE IN FEW WAYS:
+        // @@TODO: CX-RECORD:: NEED TO FINE TUNE THIS ROUTINE IN FEW WAYS:
         //      USE DB DATA-TYPES
         //      BETTER ERROR HANDLING
         //      COMPACT... IT IS TOO LONG (MAYBE...)
 
         var _this = this;
         _core.list.eachProp(this.table.fields, function (fname, f) {
-            // TODO: we do this or the check for maxLength fails, we must check the data type but we must fix the objectBuilder
+            // NOTE: we do this or the check for maxLength fails, we must check the data type but we must fix the objectBuilder
             if (fname == 'created') { return true; }
 
             var fValue = _this.getValue(fname);
@@ -256,7 +267,7 @@ class DBRecord {
             }
         });
 
-        // TODO: we want a better error message here
+        // 
         if (this.#brokenRules.length > 0) {
             console.log('Record Validation Failed!');
             console.log(this);
@@ -308,7 +319,7 @@ class DBRecord {
                 var res = await this.table.db.exec(query);
                 this.id = res.id;
                 this.#state = _recordState.UNCHANGED;
-                // TODO-IMPORTANT: OPTIMISTIC CONCURRENCY: RELOAD ROW-VERSION
+                // @@TODO: @@IMPORTANT: OPTIMISTIC CONCURRENCY: RELOAD ROW-VERSION
             }
             return this.id;
         } catch (error) {

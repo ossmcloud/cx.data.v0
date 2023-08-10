@@ -180,9 +180,9 @@ DBContext.prototype.fetch = async function (tableName, id) {
     return await this.table(tableName).fetch(id);
 }
 
+// @@OBSOLETE: do we need this ???
 // select records from query (wraps the table function)
 DBContext.prototype.select = async function (tableName, query) {
-    // TODO: 
 }
 
 module.exports = DBContext;
