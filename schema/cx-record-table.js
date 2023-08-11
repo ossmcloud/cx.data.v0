@@ -230,7 +230,7 @@ DBTable.prototype.lookUp = async function (id, fieldNames) {
             sql += `, ${fieldName}`;
         }
     });
-    // TODO: fix for multi pks
+    // @@TODO: @@MULTI-PK: fix for multi pks
     sql += ` from ${this.type} where ${this.primaryKeys[0].name} = @${this.primaryKeys[0].name}`;
 
     var query = {

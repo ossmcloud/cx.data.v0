@@ -28,7 +28,7 @@ function _insert(dbRecord) {
     if (dbRecord.table.primaryKeys[0].identity) {
         query.sql += ' select SCOPE_IDENTITY() as [id]';
     } else {
-        // TODO:MULTI-PK: return comma separated list of ids
+        // @@TODO: @@MULTI-PK: return comma separated list of ids
         query.sql += ' select @' + dbRecord.table.primaryKeys[0].name + ' as [id]';
     }
     //
@@ -70,7 +70,7 @@ function _update(dbRecord) {
         query.params.push({ name: _rowVersionFieldName, value: dbRecord.rowVersion });
     }
 
-    // TODO:MULTI-PK: return comma separated list of ids
+    // @@TODO: @@MULTI-PK: return comma separated list of ids
     query.sql += ' select @' + pk.name + ' as [id]';
     //
     query.noRowsAffected = 'the record has been edited or deleted by another user!';
