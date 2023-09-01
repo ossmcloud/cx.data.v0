@@ -114,13 +114,16 @@ class DBTable {
             if (!params[paramName]) { continue; }
             var fieldName = paramName;
             var isToFilter = paramName.substring(paramName.length - 2) == 'To';
-            var hasToFilter = (isToFilter) ? (params[paramName.substring(0, paramName.length-2)] != undefined) : (params[paramName + 'To'] != undefined);
-
+            var hasToFilter = (isToFilter) ? (params[paramName.substring(0, paramName.length - 2)] != undefined) : (params[paramName + 'To'] != undefined);
+            
+            var paramValue = params[paramName];
+            if (!query.params) { query.params = []; }
+            
             if (isToFilter) { fieldName = fieldName.substring(0, paramName.length - 2); }
             if (this.fields[fieldName]) {
                 var field = this.fields[fieldName];
                 var operator = '=';
-                var paramValue = params[paramName];
+                
 
                 if (field.dataType == 'datetime' || field.dataType == 'int' || field.dataType == 'bigint' || field.dataType == 'money') {
                     if (hasToFilter) {
@@ -137,8 +140,11 @@ class DBTable {
 
                 query.sql += ` and ${tableAlias}${fieldName} ${operator} @${paramName}`;
 
-                if (!query.params) { query.params = []; }
+                
                 query.params.push({ name: paramName, value: paramValue });
+            } else {
+                query.sql += ` and ${fieldName} = @${paramName.replace('.','_')}`;
+                query.params.push({ name: paramName.replace('.', '_'), value: paramValue });
             }
         }
 
