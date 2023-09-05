@@ -111,6 +111,7 @@ class DBTable {
         if (tableAlias) { tableAlias = tableAlias + '.'; }
         for (var paramName in params) {
             if (paramName == 'page') { continue; }
+            if (paramName == 'noPaging') { continue; }
             if (!params[paramName]) { continue; }
             var fieldName = paramName;
             var isToFilter = paramName.substring(paramName.length - 2) == 'To';
