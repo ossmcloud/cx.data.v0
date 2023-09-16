@@ -113,7 +113,9 @@ class DBTable {
             if (paramName == 'page') { continue; }
             if (paramName == 'noPaging') { continue; }
             if (!params[paramName]) { continue; }
+
             var fieldName = paramName;
+            if (fieldName == 's') { fieldName = 'shopId'; }
             var isToFilter = paramName.substring(paramName.length - 2) == 'To';
             var hasToFilter = (isToFilter) ? (params[paramName.substring(0, paramName.length - 2)] != undefined) : (params[paramName + 'To'] != undefined);
             
