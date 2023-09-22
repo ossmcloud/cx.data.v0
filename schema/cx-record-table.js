@@ -77,7 +77,7 @@ class DBTable {
 
         if (query.paging && !query.sqlCount) {
             try {
-                var sql = query.sql.toLowerCase().indexOf(' from');
+                var sql = query.sql.toLowerCase().indexOf(' from ' + this.type);
                 if (sql > 0) {
                     var sqlOrder = query.sql.toLowerCase().indexOf('order by');
                     if (sqlOrder < 0) { sqlOrder = query.sql.length; }
@@ -100,6 +100,7 @@ class DBTable {
                 this.records.count = rawResults.recordCount;
             } catch (error) {
                 // ignore issue here, don't want to stop for this only
+                //console.log(error);
             }
         }
         
