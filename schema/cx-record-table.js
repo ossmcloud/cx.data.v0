@@ -113,6 +113,9 @@ class DBTable {
         for (var paramName in params) {
             if (paramName == 'page') { continue; }
             if (paramName == 'noPaging') { continue; }
+            if (paramName.indexOf('SKIP') == 0) {
+                continue;
+            }
             if (!params[paramName]) { continue; }
 
             var fieldName = paramName;
@@ -124,6 +127,9 @@ class DBTable {
             if (!query.params) { query.params = []; }
             
             if (isToFilter) { fieldName = fieldName.substring(0, paramName.length - 2); }
+            // if (fieldName.indexOf('.') > 0) {
+            //     fieldName = fieldName.substring(fieldName.indexOf('.')+1);
+            // }
             if (this.fields[fieldName]) {
                 var field = this.fields[fieldName];
                 var operator = '=';
