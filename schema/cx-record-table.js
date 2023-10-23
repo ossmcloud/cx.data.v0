@@ -77,7 +77,7 @@ class DBTable {
 
         if (query.paging && !query.sqlCount) {
             try {
-                var sql = query.sql.toLowerCase().indexOf(' from');
+                var sql = query.sql.toLowerCase().indexOf(' from ' + this.type);
                 if (sql > 0) {
                     var sqlOrder = query.sql.toLowerCase().indexOf('order by');
                     if (sqlOrder < 0) { sqlOrder = query.sql.length; }
@@ -100,6 +100,7 @@ class DBTable {
                 this.records.count = rawResults.recordCount;
             } catch (error) {
                 // ignore issue here, don't want to stop for this only
+                //console.log(error);
             }
         }
         
@@ -111,16 +112,28 @@ class DBTable {
         if (tableAlias) { tableAlias = tableAlias + '.'; }
         for (var paramName in params) {
             if (paramName == 'page') { continue; }
+            if (paramName == 'noPaging') { continue; }
+            if (paramName.indexOf('SKIP') == 0) {
+                continue;
+            }
             if (!params[paramName]) { continue; }
-            var fieldName = paramName;
-            var isToFilter = paramName.substring(paramName.length - 2) == 'To';
-            var hasToFilter = (isToFilter) ? (params[paramName.substring(0, paramName.length-2)] != undefined) : (params[paramName + 'To'] != undefined);
 
+            var fieldName = paramName;
+            if (fieldName == 's') { fieldName = 'shopId'; }
+            var isToFilter = paramName.substring(paramName.length - 2) == 'To';
+            var hasToFilter = (isToFilter) ? (params[paramName.substring(0, paramName.length - 2)] != undefined) : (params[paramName + 'To'] != undefined);
+            
+            var paramValue = params[paramName];
+            if (!query.params) { query.params = []; }
+            
             if (isToFilter) { fieldName = fieldName.substring(0, paramName.length - 2); }
+            // if (fieldName.indexOf('.') > 0) {
+            //     fieldName = fieldName.substring(fieldName.indexOf('.')+1);
+            // }
             if (this.fields[fieldName]) {
                 var field = this.fields[fieldName];
                 var operator = '=';
-                var paramValue = params[paramName];
+                
 
                 if (field.dataType == 'datetime' || field.dataType == 'int' || field.dataType == 'bigint' || field.dataType == 'money') {
                     if (hasToFilter) {
@@ -137,8 +150,11 @@ class DBTable {
 
                 query.sql += ` and ${tableAlias}${fieldName} ${operator} @${paramName}`;
 
-                if (!query.params) { query.params = []; }
+                
                 query.params.push({ name: paramName, value: paramValue });
+            } else {
+                query.sql += ` and ${fieldName} = @${paramName.replace('.','_')}`;
+                query.params.push({ name: paramName.replace('.', '_'), value: paramValue });
             }
         }
 
