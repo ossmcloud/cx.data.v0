@@ -139,6 +139,9 @@ class DBTable {
                     if (hasToFilter) {
                         operator = (isToFilter) ? '<=' : '>=';
                     }
+                } else if (field.dataType == 'bit') {
+                    paramValue = paramValue.toLowerCase();
+                    paramValue = (paramValue == 't' || paramValue == 'true' || paramValue == 'y' || paramValue == 'yes' || paramValue == 'on' || paramValue == '1') ? '1' : '0';
                 } else if (field.dataType == 'varchar') {
                     operator = 'like';
                     if (paramValue[paramValue.length - 1] != '%') {
