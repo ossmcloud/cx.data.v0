@@ -135,7 +135,7 @@ class DBTable {
                 var operator = '=';
                 
 
-                if (field.dataType == 'datetime' || field.dataType == 'int' || field.dataType == 'bigint' || field.dataType == 'money') {
+                if (field.dataType == 'datetime' || field.dataType == 'date' || field.dataType == 'int' || field.dataType == 'bigint' || field.dataType == 'money') {
                     if (hasToFilter) {
                         operator = (isToFilter) ? '<=' : '>=';
                     }
