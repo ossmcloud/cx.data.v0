@@ -135,13 +135,15 @@ class DBTable {
                 var operator = '=';
                 
 
-                if (field.dataType == 'datetime' || field.dataType == 'int' || field.dataType == 'bigint' || field.dataType == 'money') {
+                var fieldSqlName = `${tableAlias}${fieldName}`;
+                if (field.dataType == 'datetime' || field.dataType == 'date' || field.dataType == 'int' || field.dataType == 'bigint' || field.dataType == 'money') {
                     if (hasToFilter) {
                         operator = (isToFilter) ? '<=' : '>=';
                     }
                 } else if (field.dataType == 'bit') {
                     paramValue = paramValue.toLowerCase();
                     paramValue = (paramValue == 't' || paramValue == 'true' || paramValue == 'y' || paramValue == 'yes' || paramValue == 'on' || paramValue == '1') ? '1' : '0';
+                    fieldSqlName = `isnull(${fieldSqlName}, 0)`;
                 } else if (field.dataType == 'varchar') {
                     operator = 'like';
                     if (paramValue[paramValue.length - 1] != '%') {
@@ -151,7 +153,7 @@ class DBTable {
 
                 if (callback && callback({ paramName: paramName, fieldName: fieldName, isToFilter: isToFilter, operator: operator }) === false) { continue; }
 
-                query.sql += ` and ${tableAlias}${fieldName} ${operator} @${paramName}`;
+                query.sql += ` and ${fieldSqlName} ${operator} @${paramName}`;
 
                 
                 query.params.push({ name: paramName, value: paramValue });
