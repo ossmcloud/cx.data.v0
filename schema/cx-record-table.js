@@ -3,6 +3,7 @@
 const _core = require('cx-core');
 const _cx_sql_utils = require('./cx-record-tsql');
 const DBRecordQuery = require('./cx-record-query');
+const { truncateSync } = require('fs');
 
 
 class DBTable {
@@ -194,16 +195,14 @@ DBTable.prototype.eachEx = function (callback) {
     });
 }
 
-DBTable.prototype.find = function (filters) {
+DBTable.prototype.find = function (callback) {
     var res = [];
     this.each(function (record, idx) {
-        var filterIn = false;
-        _core.list.each(filters, function (filter, idx) {
-            
-        });
-        
-
+        if (callback(record, idx) === true) {
+            res.push(record);
+        }
     });
+    return res;
 }
 
 DBTable.prototype.create = function (defaults) {
