@@ -4,6 +4,7 @@ const _core = require('cx-core');
 const _cx_sql_utils = require('./cx-record-tsql');
 const DBRecordQuery = require('./cx-record-query');
 const { truncateSync } = require('fs');
+const { fileURLToPath } = require('url');
 
 
 class DBTable {
@@ -261,6 +262,29 @@ DBTable.prototype.lookUp = async function (id, fieldNames) {
     var res = await this.db.exec(query);
     if (fieldNames.length == 1 && res) { return res[fieldNames[0]]; }
     return res;
+}
+
+DBTable.prototype.submit = async function (id, fieldNamesAndValues) {
+    if (!id) { throw new Error('DBTable.prototype.submit: [id] cannot be null'); }
+    if (!fieldNamesAndValues) { throw new Error('DBTable.prototype.submit: [fieldNamesAndValues] cannot be null'); }
+    
+    var query = { sql:'', params: [] }
+
+    var sql = ``;
+    for (var fieldName in fieldNamesAndValues) {
+        sql += (sql) ? ', ' : 'set ';
+        sql += `${fieldName} = @${fieldName}`;
+        query.params.push({ name: fieldName, value: fieldNamesAndValues[fieldName] })
+    }
+
+    query.sql = `
+        update ${this.type}
+        ${sql}
+        where ${this.primaryKeys[0].name} = @${this.primaryKeys[0].name}
+    `;
+    query.params.push({ name: this.primaryKeys[0].name, value: id })
+    
+    await this.db.exec(query);
 }
 
 DBTable.prototype.fetchOrNew = async function (id) {
