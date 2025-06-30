@@ -18,6 +18,6 @@
     "homepage": "https://github.com/ossmcloud/cx.data.v0#readme",
     "dependencies": {
         "cx-core": "git+https://github.com/ossmcloud/cx.core.v0.git",
-        "mssql": "^6.3.0"
+        "mssql": "^11.0.1"
     }
 }
