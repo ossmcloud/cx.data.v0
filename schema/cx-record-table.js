@@ -14,7 +14,7 @@ class DBTable {
     #primaryKeys = [];
     #db_context = null;
     #query = null;
-    
+
     constructor(tableName, tableFields) {
         this.#tableName = tableName;
         this.#tableFields = tableFields;
@@ -28,7 +28,7 @@ class DBTable {
     }
 
     // read-only fields
-    
+
     get type() { return this.#tableName; }
     get fields() { return this.#tableFields; }
     get primaryKeys() { return this.#primaryKeys; }
@@ -59,7 +59,7 @@ class DBTable {
     } set cx(val) {
         this.#db_context = val;
     }
-    
+
     // this MUST be inherited on extended classes
     createNew() {
         throw new Error('function createNew must be implemented by derived class');
@@ -89,7 +89,7 @@ class DBTable {
                 // ignore issue here, don't want to stop for this only
             }
         }
-        
+
         var rawResults = await this.db.exec(query);
         rawResults.each(function (res, idx) { _this.populate(res); });
 
@@ -105,7 +105,7 @@ class DBTable {
                 //console.log(error);
             }
         }
-        
+
         return this.records.length > 0;
     }
 
@@ -124,10 +124,10 @@ class DBTable {
             if (fieldName == 's') { fieldName = 'shopId'; }
             var isToFilter = paramName.substring(paramName.length - 2) == 'To';
             var hasToFilter = (isToFilter) ? (params[paramName.substring(0, paramName.length - 2)] != undefined) : (params[paramName + 'To'] != undefined);
-            
+
             var paramValue = params[paramName];
             if (!query.params) { query.params = []; }
-            
+
             if (isToFilter) { fieldName = fieldName.substring(0, paramName.length - 2); }
             // if (fieldName.indexOf('.') > 0) {
             //     fieldName = fieldName.substring(fieldName.indexOf('.')+1);
@@ -135,7 +135,7 @@ class DBTable {
             if (this.fields[fieldName]) {
                 var field = this.fields[fieldName];
                 var operator = '=';
-                
+
 
                 var fieldSqlName = `${tableAlias}${fieldName}`;
                 if (field.dataType == 'datetime' || field.dataType == 'date' || field.dataType == 'int' || field.dataType == 'bigint' || field.dataType == 'money') {
@@ -153,15 +153,39 @@ class DBTable {
                     }
                 }
 
-                if (callback && callback({ paramName: paramName, fieldName: fieldName, isToFilter: isToFilter, operator: operator }) === false) { continue; }
-
-                query.sql += ` and ${fieldSqlName} ${operator} @${paramName}`;
-
-                
-                query.params.push({ name: paramName, value: paramValue });
+                var customFilter = null;
+                customFilter = callback && callback({ paramName: paramName, paramValue: paramValue, fieldName: fieldName, isToFilter: isToFilter, operator: operator })
+                if (customFilter === false) { continue; }
+                if (customFilter) {
+                    if (customFilter.constructor.name == 'String') {
+                        query.sql += customFilter;
+                    } else if (customFilter.operator == 'in') {
+                        query.sql += ` and ${customFilter.field} ${customFilter.operator} (${customFilter.paramValue})`;
+                    } else {
+                        query.sql += ` and ${customFilter.field} ${customFilter.operator} @${customFilter.paramName}`;
+                        query.params.push({ name: customFilter.paramName, value: customFilter.paramValue });
+                    }
+                } else {
+                    query.sql += ` and ${fieldSqlName} ${operator} @${paramName}`;
+                    query.params.push({ name: paramName, value: paramValue });
+                }
             } else {
-                query.sql += ` and ${fieldName} = @${paramName.replace('.','_')}`;
-                query.params.push({ name: paramName.replace('.', '_'), value: paramValue });
+                var customFilter = null;
+                customFilter = callback && callback({ paramName: paramName, paramValue: paramValue, fieldName: fieldName, isToFilter: isToFilter, operator: operator })
+                if (customFilter === false) { continue; }
+                if (customFilter) {
+                    if (customFilter.constructor.name == 'String') {
+                        query.sql += customFilter;
+                    } else if (customFilter.operator == 'in') {
+                        query.sql += ` and ${customFilter.field} ${customFilter.operator} (${customFilter.paramValue})`;
+                    } else {
+                        query.sql += ` and ${customFilter.field} ${customFilter.operator} @${customFilter.paramName}`;
+                        query.params.push({ name: customFilter.paramName, value: customFilter.paramValue });
+                    }
+                } else {
+                    query.sql += ` and ${fieldName} = @${paramName.replace('.', '_')}`;
+                    query.params.push({ name: paramName.replace('.', '_'), value: paramValue });
+                }
             }
         }
 
@@ -233,7 +257,7 @@ DBTable.prototype.delete = async function (id, noErrorIfNotFound) {
     if (!id) { throw new Error('DBTable::delete - missing required argument [id]'); }
     var query = _cx_sql_utils.delete(this.type, this.primaryKeys, id);
     var queryRes = await this.db.exec(query);
-    if (queryRes.rowsAffected==0) {
+    if (queryRes.rowsAffected == 0) {
         if (noErrorIfNotFound) { return; }
         throw new Error(`${this.type} record [${id}] does not exist or was deleted!`);
     }
@@ -267,8 +291,8 @@ DBTable.prototype.lookUp = async function (id, fieldNames) {
 DBTable.prototype.submit = async function (id, fieldNamesAndValues) {
     if (!id) { throw new Error('DBTable.prototype.submit: [id] cannot be null'); }
     if (!fieldNamesAndValues) { throw new Error('DBTable.prototype.submit: [fieldNamesAndValues] cannot be null'); }
-    
-    var query = { sql:'', params: [] }
+
+    var query = { sql: '', params: [] }
 
     var sql = ``;
     for (var fieldName in fieldNamesAndValues) {
@@ -283,7 +307,7 @@ DBTable.prototype.submit = async function (id, fieldNamesAndValues) {
         where ${this.primaryKeys[0].name} = @${this.primaryKeys[0].name}
     `;
     query.params.push({ name: this.primaryKeys[0].name, value: id })
-    
+
     await this.db.exec(query);
 }
 
