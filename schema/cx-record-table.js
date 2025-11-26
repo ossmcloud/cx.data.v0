@@ -69,10 +69,14 @@ class DBTable {
         this.#records = records;
     }
 
-    async select(query) {
+    async select(query, append) {
         //
         var _this = this;
-        this.#records = [];
+        if (append || query?.append) {
+            // @@NOTE: do not clear collection, append to what we have
+        } else {
+            this.#records = [];
+        }
         if (_core.empty(query)) { query = null; }
 
         query = query || this.query.build();
