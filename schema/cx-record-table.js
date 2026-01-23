@@ -119,6 +119,7 @@ class DBTable {
         for (var paramName in params) {
             if (paramName == 'page') { continue; }
             if (paramName == 'noPaging') { continue; }
+            if (paramName == 'a') { continue; }
             if (paramName.indexOf('SKIP') == 0) {
                 continue;
             }
