@@ -37,6 +37,12 @@ class DBContext {
         if (!this.#credentials) { return null; }
         return this.#credentials.username;
     }
+
+    get accountCode() {
+        if (!this.#credentials) { return null; }
+        return this.#credentials.accountCode;
+    }
+
     
     // NOTE: I need this function within the class because on DBContext.prototype this.#transaction does not work :(
     //       I do not want the #transaction property to be accessible in any way from outside the class
