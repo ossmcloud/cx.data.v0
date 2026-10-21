@@ -54,7 +54,7 @@ class DBRecordQuery {
 
     addOrderBy(name, direction) {
         var ordBy = _core.list.findInArray(this.orderBy, 'name', name);
-        if (!ordBy) { return ordBy; }
+        if (ordBy) { return ordBy; }
         ordBy = new DBRecordQueryOrderBy(name, direction);
         this.orderBy.push(ordBy);
         return ordBy;
