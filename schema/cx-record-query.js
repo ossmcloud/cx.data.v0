@@ -152,7 +152,9 @@ class DBRecordQueryColumn {
         if (!options.name) { throw new Error('DBQueryColumn::construct - missing required argument [options.name]'); }
 
         this.#name = options.name;
-        this.#sort = options.sort || 'ASC';
+        if (options.name != '*') {
+            this.#sort = options.sort || 'ASC';
+        }
         this.#alias = options.alias || null;
     }
 
