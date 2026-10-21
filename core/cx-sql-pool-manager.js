@@ -15,7 +15,7 @@ const _poolsGarbageCollectionFreqInMinutes = 10;        // DEPLOY: we probably w
 setInterval(function () {
     if (process.env.CX_POOL_LOG) { console.log(_core.date.formatEx() + ' - garbage collection...'); }
     _pools.garbageCollection();
-}, (60000 * _poolsGarbageCollectionFreqInMinutes));
+}, (60000 * _poolsGarbageCollectionFreqInMinutes)).unref();     // NOTE: unref so this timer alone does not keep the process alive (i.e.: scripts, tests)
 //
 // THE POOL COLLECTION OBJECT
 //
