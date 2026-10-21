@@ -6,6 +6,22 @@ const DBRecordQuery = require('./cx-record-query');
 const { truncateSync } = require('fs');
 const { fileURLToPath } = require('url');
 
+// a valid sql identifier, optionally prefixed by a table alias (i.e.: shopId or d.shopId)
+const _sqlIdentifier = /^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?$/;
+
+// adds one sql parameter per value (comma separated string or array) and returns the parameter list for an 'in' clause
+function _inListParams(query, paramName, values) {
+    if (!Array.isArray(values)) { values = String(values).split(','); }
+    var names = [];
+    values.forEach((value, idx) => {
+        value = String(value).trim();
+        if (value === '') { return; }
+        names.push(`@${paramName}_${idx}`);
+        query.params.push({ name: `${paramName}_${idx}`, value: value });
+    });
+    // NOTE: 'in (null)' matches nothing, which is what an empty list should do
+    return (names.length > 0) ? names.join(',') : 'null';
+}
 
 class DBTable {
     #tableName = null;
@@ -165,7 +181,7 @@ class DBTable {
                     if (customFilter.constructor.name == 'String') {
                         query.sql += customFilter;
                     } else if (customFilter.operator == 'in') {
-                        query.sql += ` and ${customFilter.field} ${customFilter.operator} (${customFilter.paramValue})`;
+                        query.sql += ` and ${customFilter.field} in (${_inListParams(query, customFilter.paramName, customFilter.paramValue)})`;
                     } else {
                         query.sql += ` and ${customFilter.field} ${customFilter.operator} @${customFilter.paramName}`;
                         query.params.push({ name: customFilter.paramName, value: customFilter.paramValue });
@@ -182,12 +198,14 @@ class DBTable {
                     if (customFilter.constructor.name == 'String') {
                         query.sql += customFilter;
                     } else if (customFilter.operator == 'in') {
-                        query.sql += ` and ${customFilter.field} ${customFilter.operator} (${customFilter.paramValue})`;
+                        query.sql += ` and ${customFilter.field} in (${_inListParams(query, customFilter.paramName, customFilter.paramValue)})`;
                     } else {
                         query.sql += ` and ${customFilter.field} ${customFilter.operator} @${customFilter.paramName}`;
                         query.params.push({ name: customFilter.paramName, value: customFilter.paramValue });
                     }
                 } else {
+                    // NOTE: the field name comes from the request (param name) so it must be a plain identifier
+                    if (!_sqlIdentifier.test(fieldName) || !_sqlIdentifier.test(paramName)) { continue; }
                     query.sql += ` and ${fieldName} = @${paramName.replace('.', '_')}`;
                     query.params.push({ name: paramName.replace('.', '_'), value: paramValue });
                 }
