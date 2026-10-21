@@ -319,6 +319,8 @@ class DBRecord {
                 var res = await this.table.db.exec(query);
                 this.id = res.id;
                 this.#state = _recordState.UNCHANGED;
+                // NOTE: the saved values are now the original ones, or a second save would send the same changes again
+                _core.list.eachProp(this.fields, function (key, field) { field.acceptChanges(); });
                 // @@TODO: @@IMPORTANT: OPTIMISTIC CONCURRENCY: RELOAD ROW-VERSION
             }
             return this.id;
