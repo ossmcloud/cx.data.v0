@@ -37,7 +37,7 @@ class DBRecord {
             var fieldValue = DBRecordField.getValue(defaults, key, field.default);
             // add field object to fields collection
             this.#fields[key] = new DBRecordField(this, field, fieldValue);
-            this.#fields[key].onChange(this.onFieldChange);
+            this.#fields[key].onChange(this.onFieldChange.bind(this));
             // if a primary key get the field name so we can use for the 'id' property
             if (field.pk) {
                 // @@TODO: @@MULTI-PK: build comma separated pk names for the property - NOT SURE
@@ -173,8 +173,8 @@ class DBRecord {
     }
 
     onFieldChange(field) {
-        // set the record as edited
-        this.#state = _recordState.EDITED;
+        // set the record as edited (only if loaded from DB, new/deleted records must keep their state)
+        if (this.#state == _recordState.UNCHANGED) { this.#state = _recordState.EDITED; }
     }
 
     dirty() {

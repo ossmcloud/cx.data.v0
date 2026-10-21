@@ -46,7 +46,7 @@ class DBRecordField {
     }
 
     onChange(handler) {
-        if (this.#on_change.indexOf(handler)) { return; }
+        if (this.#on_change.indexOf(handler) >= 0) { return; }
         this.#on_change.push(handler);
     }
 

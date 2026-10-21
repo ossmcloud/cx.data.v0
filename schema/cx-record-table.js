@@ -327,13 +327,13 @@ DBTable.prototype.fetchOrNew = async function (id) {
 }
 
 DBTable.prototype.first = function () {
-    if (this.records.count == 0) { return null; }
+    if (this.records.length == 0) { return null; }
     return this.records[0];
 }
 
 DBTable.prototype.last = function () {
-    if (this.records.count == 0) { return null; }
-    return this.records[this.records.count - 1];
+    if (this.records.length == 0) { return null; }
+    return this.records[this.records.length - 1];
 }
 
 
