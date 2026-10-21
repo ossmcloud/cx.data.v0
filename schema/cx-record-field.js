@@ -50,6 +50,11 @@ class DBRecordField {
         this.#on_change.push(handler);
     }
 
+    // called once the record is saved: the current value becomes the original one (so the field is no longer dirty)
+    acceptChanges() {
+        this.#valueOriginal = this.#value;
+    }
+
 
     static getValue(fromObject, fieldName, defaultValue) {
         if (!fromObject) { fromObject = {}; }
