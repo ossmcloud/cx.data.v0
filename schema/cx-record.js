@@ -250,8 +250,8 @@ class DBRecord {
                 }
             }
 
-            // check max length
-            if (f.maxLength && f.dataType === 'varchar') {
+            // check max length (NOTE: varchar(max) has maxLength -1)
+            if (f.maxLength > 0 && f.dataType === 'varchar') {
                 var value = (fValue) ? fValue.toString() : '';
                 if (value.length > f.maxLength) {
                     if (f.truncate) {
