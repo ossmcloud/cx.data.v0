@@ -37,7 +37,7 @@ class DBRecord {
             var fieldValue = DBRecordField.getValue(defaults, key, field.default);
             // add field object to fields collection
             this.#fields[key] = new DBRecordField(this, field, fieldValue);
-            this.#fields[key].onChange(this.onFieldChange);
+            this.#fields[key].onChange(this.onFieldChange.bind(this));
             // if a primary key get the field name so we can use for the 'id' property
             if (field.pk) {
                 // @@TODO: @@MULTI-PK: build comma separated pk names for the property - NOT SURE
@@ -173,8 +173,8 @@ class DBRecord {
     }
 
     onFieldChange(field) {
-        // set the record as edited
-        this.#state = _recordState.EDITED;
+        // set the record as edited (only if loaded from DB, new/deleted records must keep their state)
+        if (this.#state == _recordState.UNCHANGED) { this.#state = _recordState.EDITED; }
     }
 
     dirty() {
@@ -250,8 +250,8 @@ class DBRecord {
                 }
             }
 
-            // check max length
-            if (f.maxLength && f.dataType === 'varchar') {
+            // check max length (NOTE: varchar(max) has maxLength -1)
+            if (f.maxLength > 0 && f.dataType === 'varchar') {
                 var value = (fValue) ? fValue.toString() : '';
                 if (value.length > f.maxLength) {
                     if (f.truncate) {
@@ -319,6 +319,8 @@ class DBRecord {
                 var res = await this.table.db.exec(query);
                 this.id = res.id;
                 this.#state = _recordState.UNCHANGED;
+                // NOTE: the saved values are now the original ones, or a second save would send the same changes again
+                _core.list.eachProp(this.fields, function (key, field) { field.acceptChanges(); });
                 // @@TODO: @@IMPORTANT: OPTIMISTIC CONCURRENCY: RELOAD ROW-VERSION
             }
             return this.id;

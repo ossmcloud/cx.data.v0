@@ -19,7 +19,7 @@ class DBContext {
         this.#schemaPath = schemaPath;
         this.#credentials = credentials;
         if (this.#schemaPath) {
-            if (this.#schemaPath.substring(this.#schemaPath.length - 1, 1) != '/') {
+            if (!this.#schemaPath.endsWith('/')) {
                 this.#schemaPath = this.#schemaPath + '/';
             }
         }

@@ -42,15 +42,26 @@ function _update(dbRecord) {
     var query = { sql: '', params: [] };
     query.sql = 'update [' + dbRecord.table.type + '] set ';
     // loop field and add the update for the field only if it is dirty
+    var setCount = 0;
     _core.list.eachProp(dbRecord.fields, function (key, field) {
         if (field.dirty) {
-            if (!field.pk) {
+            if (!field.tableField.pk) {
                 query.sql += '[' + key + '] = @' + key + ',';
                 query.params.push({ name: key, value: dbRecord[key] });
+                setCount++;
             }
         }
     });
 
+    // nothing to update (i.e.: only pk fields changed), just return the id
+    if (setCount == 0) {
+        // @@TODO: @@MULTI-PK: return comma separated list of ids
+        var pkName = dbRecord.table.primaryKeys[0].name;
+        query.sql = 'select @' + pkName + ' as [id]';
+        query.params = [{ name: pkName, value: dbRecord[pkName] }];
+        query.returnFirst = true;
+        return query;
+    }
 
     // remove last comma
     query.sql = _core.text.trimRight(query.sql, ',');

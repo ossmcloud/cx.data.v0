@@ -6,6 +6,8 @@ const _core = require('cx-core');
 
 // pool collection
 const _pools = new DBPoolCollection();
+// pools currently connecting (by name), so concurrent requests share the same connection attempt
+const _poolsConnecting = {};
 const _poolsGarbageCollectionFreqInMinutes = 10;        // DEPLOY: we probably want this less frequently (like every hour or so)
 //
 // SET RECURRING PROCESS TO CLOSE UNUSED POOLS
@@ -13,7 +15,7 @@ const _poolsGarbageCollectionFreqInMinutes = 10;        // DEPLOY: we probably w
 setInterval(function () {
     if (process.env.CX_POOL_LOG) { console.log(_core.date.formatEx() + ' - garbage collection...'); }
     _pools.garbageCollection();
-}, (60000 * _poolsGarbageCollectionFreqInMinutes));
+}, (60000 * _poolsGarbageCollectionFreqInMinutes)).unref();     // NOTE: unref so this timer alone does not keep the process alive (i.e.: scripts, tests)
 //
 // THE POOL COLLECTION OBJECT
 //
@@ -35,12 +37,23 @@ function DBPoolCollection() {
             // if we have the pool just refresh last used and return it
             this[options.name].lastUsed = new Date();
             this[options.name].useCount += 1;
+        } else if (_poolsConnecting[options.name]) {
+            // another request is already opening this pool, wait for it
+            await _poolsConnecting[options.name];
+            if (!Object.prototype.hasOwnProperty.call(this, options.name)) { return this.getPool(options); }
+            this[options.name].lastUsed = new Date();
+            this[options.name].useCount += 1;
         } else {
             // DEV-LOG
             if (process.env.CX_POOL_LOG) { console.log('\x1b[33m', _core.date.formatEx() + ' - opening pool: ' + options.name); }
             // create a new pool and connect
             var pool = new CXPool(this, options);
-            await pool.connect();
+            _poolsConnecting[options.name] = pool.connect();
+            try {
+                await _poolsConnecting[options.name];
+            } finally {
+                delete _poolsConnecting[options.name];
+            }
             this[options.name] = pool;
         }
         return this[options.name];

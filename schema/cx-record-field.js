@@ -46,8 +46,13 @@ class DBRecordField {
     }
 
     onChange(handler) {
-        if (this.#on_change.indexOf(handler)) { return; }
+        if (this.#on_change.indexOf(handler) >= 0) { return; }
         this.#on_change.push(handler);
+    }
+
+    // called once the record is saved: the current value becomes the original one (so the field is no longer dirty)
+    acceptChanges() {
+        this.#valueOriginal = this.#value;
     }
 
 
